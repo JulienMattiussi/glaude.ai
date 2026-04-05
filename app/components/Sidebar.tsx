@@ -44,6 +44,7 @@ interface SidebarProps {
   onSelectConversation: (id: string) => void;
   activeView: string;
   onNavigate: (view: string) => void;
+  onOpenSearch: () => void;
 }
 
 export default function Sidebar({
@@ -53,6 +54,7 @@ export default function Sidebar({
   onSelectConversation,
   activeView,
   onNavigate,
+  onOpenSearch,
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -102,6 +104,7 @@ export default function Sidebar({
           collapsed={collapsed}
           icon={<Icon><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></Icon>}
           label="Rechercher"
+          onClick={onOpenSearch}
         />
         <NavItem
           collapsed={collapsed}

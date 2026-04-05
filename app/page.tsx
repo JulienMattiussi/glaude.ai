@@ -4,6 +4,7 @@ import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import ChatArea from "./components/ChatArea";
 import DiscussionsPage from "./components/DiscussionsPage";
+import SearchModal from "./components/SearchModal";
 
 interface Message {
   id: string;
@@ -23,6 +24,7 @@ export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [view, setView] = useState<View>("chat");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const activeConversation = conversations.find((c) => c.id === activeId) ?? null;
 
@@ -121,7 +123,15 @@ export default function Home() {
         onSelectConversation={handleSelectConversation}
         activeView={view}
         onNavigate={setView}
+        onOpenSearch={() => setSearchOpen(true)}
       />
+      {searchOpen && (
+        <SearchModal
+          conversations={conversations}
+          onSelect={(id) => { handleSelectConversation(id); setSearchOpen(false); }}
+          onClose={() => setSearchOpen(false)}
+        />
+      )}
       <main className="flex-1 flex flex-col overflow-hidden">
         {view === "discussions" ? (
           <DiscussionsPage
