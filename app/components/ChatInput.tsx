@@ -96,7 +96,7 @@ export const ChatInput = ({
       </div>
     </div>
     <div className="flex items-center justify-between px-3 pb-2.5 border-t border-(--border) pt-2">
-      <span className="text-xs text-(--muted)">Connectez vos outils à Glaude</span>
+      <span className="text-xs text-(--muted)">Connectez vos outils au Glaude</span>
       <ToolIcons />
     </div>
   </div>

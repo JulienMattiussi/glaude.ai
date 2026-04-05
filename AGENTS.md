@@ -47,11 +47,6 @@ A simplified clone of claude.ai built with Next.js 16 (App Router), React 19, Ty
 
 Collapse/expand is animated via a single render path: `transition-[width] duration-300` on the wrapper div (inline style `width: collapsed ? "3rem" : "14rem"`), labels use `w-0 opacity-0` ↔ `w-auto opacity-100` transitions. No conditional mount/unmount.
 
-## Intentional omissions
-
-- No "Projets" menu item
-- No "Demandez à Marmelab" menu item
-- Artéfacts, Code, Personnaliser exist in sidebar but have no active behaviour
 
 ## Naming conventions
 

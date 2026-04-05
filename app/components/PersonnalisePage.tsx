@@ -70,7 +70,7 @@ export default function PersonnalisePage() {
                 Connectez vos applications
               </span>
               <span className="text-sm text-(--muted) leading-relaxed">
-                Permettez à Glaude de lire et d&apos;écrire dans les outils que vous utilisez déjà.
+                Permettez au Glaude de lire et d&apos;écrire dans les outils que vous utilisez déjà.
               </span>
             </div>
           </button>
@@ -88,7 +88,7 @@ export default function PersonnalisePage() {
                 Créer de nouvelles compétences
               </span>
               <span className="text-sm text-(--muted) leading-relaxed">
-                Apprenez à Glaude vos processus, normes d&apos;équipe et expertise.
+                Apprenez au Glaude vos processus, normes d&apos;équipe et expertise.
               </span>
             </div>
           </button>

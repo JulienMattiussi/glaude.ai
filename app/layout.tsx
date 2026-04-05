@@ -8,8 +8,20 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Glaude",
-  description: "Glaude - AI Assistant",
+  title: "Le Glaude",
+  description: "Le Glaude se connecte à l'univers pour répondre à toutes vos questions.",
+  openGraph: {
+    title: "Le Glaude",
+    description: "Le Glaude se connecte à l'univers pour répondre à toutes vos questions.",
+    siteName: "Le Glaude",
+    locale: "fr_FR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Le Glaude",
+    description: "Le Glaude se connecte à l'univers pour répondre à toutes vos questions.",
+  },
 };
 
 export default function RootLayout({
