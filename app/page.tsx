@@ -37,7 +37,7 @@ export default function Home() {
     setActiveId(id);
   };
 
-  const handleSendMessage = (text: string) => {
+  const handleUserMessage = (text: string): string => {
     let convId = activeId;
     if (!convId) {
       convId = Date.now().toString();
@@ -53,24 +53,32 @@ export default function Home() {
       content: text,
     };
 
-    const assistantMessage: Message = {
-      id: `${Date.now()}-assistant`,
-      role: "assistant",
-      content: "prout",
-    };
-
     setConversations((prev) =>
       prev.map((conv) => {
         if (conv.id !== convId) return conv;
-        const updatedMessages = [...conv.messages, userMessage, assistantMessage];
         const title =
           conv.messages.length === 0
             ? text.length > 30
               ? text.slice(0, 30) + "…"
               : text
             : conv.title;
-        return { ...conv, title, messages: updatedMessages };
+        return { ...conv, title, messages: [...conv.messages, userMessage] };
       })
+    );
+
+    return convId;
+  };
+
+  const handleAssistantReply = (convId: string) => {
+    const assistantMessage: Message = {
+      id: `${Date.now()}-assistant`,
+      role: "assistant",
+      content: "prout",
+    };
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === convId ? { ...conv, messages: [...conv.messages, assistantMessage] } : conv
+      )
     );
   };
 
@@ -86,7 +94,8 @@ export default function Home() {
         <ChatArea
           conversationId={activeId}
           messages={activeConversation?.messages ?? []}
-          onSendMessage={handleSendMessage}
+          onUserMessage={handleUserMessage}
+          onAssistantReply={handleAssistantReply}
           userName="Juju"
         />
       </main>

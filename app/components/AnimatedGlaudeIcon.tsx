@@ -14,20 +14,25 @@ const PETALS = [
   { angle: 330, cy: 7.7, ry: 3.0, rx: 0.63 },
 ];
 
-export default function AnimatedGlaudeIcon({ size = 24 }: { size?: number }) {
+export default function AnimatedGlaudeIcon({
+  size = 24,
+  fast = false,
+}: {
+  size?: number;
+  fast?: boolean;
+}) {
+  const dur = fast ? "0.6s" : "2.4s";
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
       <style>{`
         @keyframes glaude-pulse {
-          0%, 100% { transform: scale(1);   opacity: 1; }
+          0%, 100% { transform: scale(1);    opacity: 1; }
           50%       { transform: scale(1.18); opacity: 0.85; }
         }
-        .glaude-petals {
-          transform-origin: 12px 12px;
-          animation: glaude-pulse 2.4s ease-in-out infinite;
-        }
+        .glaude-petals-slow  { transform-origin: 12px 12px; animation: glaude-pulse 2.4s ease-in-out infinite; }
+        .glaude-petals-fast  { transform-origin: 12px 12px; animation: glaude-pulse 0.6s ease-in-out infinite; }
       `}</style>
-      <g className="glaude-petals">
+      <g className={fast ? "glaude-petals-fast" : "glaude-petals-slow"}>
         {PETALS.map(({ angle, cy, ry, rx }) => (
           <ellipse
             key={angle}
@@ -40,7 +45,7 @@ export default function AnimatedGlaudeIcon({ size = 24 }: { size?: number }) {
         ))}
       </g>
       <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2.2">
-        <animate attributeName="r" values="3;5;3" dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1; 0.45 0 0.55 1" />
+        <animate attributeName="r" values="3;5;3" dur={dur} repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1; 0.45 0 0.55 1" />
       </circle>
     </svg>
   );

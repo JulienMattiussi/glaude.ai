@@ -147,7 +147,7 @@ export default function Sidebar({
       <div className="flex items-center justify-between px-3 pt-3 pb-2">
         <div className="flex items-center gap-2">
           <span className="text-[var(--accent)]">
-            <GlaudeIcon size={20} />
+            <GlaudeIcon size={30} />
           </span>
           <span className="font-semibold text-sm text-[var(--foreground)]">Glaude</span>
         </div>
