@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 import Sidebar from "./components/Sidebar";
 import ChatArea from "./components/ChatArea";
 import DiscussionsPage from "./components/DiscussionsPage";
@@ -22,7 +23,10 @@ interface Conversation {
 type View = "chat" | "discussions" | "personnaliser";
 
 export default function Home() {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [conversations, setConversations] = useLocalStorage<Conversation[]>(
+    "glaude-conversations",
+    []
+  );
   const [activeId, setActiveId] = useState<string | null>(null);
   const [view, setView] = useState<View>("chat");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -102,11 +106,13 @@ export default function Home() {
     );
   };
 
-  const handleAssistantReply = (convId: string) => {
+  const handleAssistantReply = (convId: string, delay: number) => {
+    const proutCount = Math.min(6, Math.max(1, Math.round((delay - 500) / 500) + 1));
+    const randomProut = () => "pro" + "u".repeat(Math.ceil(Math.random() * 3)) + "t";
     const assistantMessage: Message = {
       id: `${Date.now()}-assistant`,
       role: "assistant",
-      content: "prout",
+      content: Array.from({ length: proutCount }, randomProut).join(" "),
     };
     setConversations((prev) =>
       prev.map((conv) =>
@@ -129,7 +135,10 @@ export default function Home() {
       {searchOpen && (
         <SearchModal
           conversations={conversations}
-          onSelect={(id) => { handleSelectConversation(id); setSearchOpen(false); }}
+          onSelect={(id) => {
+            handleSelectConversation(id);
+            setSearchOpen(false);
+          }}
           onClose={() => setSearchOpen(false)}
         />
       )}

@@ -18,7 +18,7 @@ interface ChatAreaProps {
   conversationId: string | null;
   messages: Message[];
   onUserMessage: (text: string) => string;
-  onAssistantReply: (convId: string) => void;
+  onAssistantReply: (convId: string, delay: number) => void;
   onTruncate: (keepUpToId: string) => void;
   onEditMessage: (messageId: string, newContent: string) => void;
   userName?: string;
@@ -56,10 +56,11 @@ export default function ChatArea({
 
   const triggerReply = (convId: string) => {
     setIsThinking(true);
+    const delay = randomDelay();
     setTimeout(() => {
-      onAssistantReply(convId);
+      onAssistantReply(convId, delay);
       setIsThinking(false);
-    }, randomDelay());
+    }, delay);
   };
 
   const handleEditSave = () => {
