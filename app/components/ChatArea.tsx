@@ -12,9 +12,11 @@ interface Message {
 }
 
 interface ChatAreaProps {
+  conversationId: string | null;
   messages: Message[];
   onUserMessage: (text: string) => string;
   onAssistantReply: (convId: string) => void;
+  onTruncate: (keepUpToId: string) => void;
   userName?: string;
 }
 
@@ -25,6 +27,8 @@ function getGreeting() {
   if (hour < 18) return "Bon après-midi";
   return "Bonsoir";
 }
+
+const randomDelay = () => 500 + Math.random() * 2500;
 
 function formatTime(id: string) {
   return new Date(parseInt(id)).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
@@ -44,9 +48,7 @@ const RetryPaths = () => (
   </>
 );
 
-const CheckPaths = () => (
-  <polyline points="20 6 9 17 4 12" />
-);
+const CheckPaths = () => <polyline points="20 6 9 17 4 12" />;
 
 const CopyButton = ({ content }: { content: string }) => {
   const [copied, setCopied] = useState(false);
@@ -69,7 +71,10 @@ const CopyButton = ({ content }: { content: string }) => {
 const ToolIcons = () => (
   <div className="flex items-center gap-1.5 text-xs text-(--muted)">
     {["G", "G", "A", "C", "A", "C", "●"].map((icon, i) => (
-      <span key={i} className="w-5 h-5 rounded-full bg-(--hover-bg) flex items-center justify-center text-[10px] font-bold text-(--muted)">
+      <span
+        key={i}
+        className="w-5 h-5 rounded-full bg-(--hover-bg) flex items-center justify-center text-[10px] font-bold text-(--muted)"
+      >
         {icon}
       </span>
     ))}
@@ -77,34 +82,48 @@ const ToolIcons = () => (
   </div>
 );
 
-const UserMessageActions = ({ timestamp, content }: { timestamp: string; content: string }) => (
+const UserMessageActions = ({ timestamp, content, onRetry }: { timestamp: string; content: string; onRetry: () => void }) => (
   <div className="flex items-center gap-1 mt-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
     <span className="text-xs text-(--muted) mr-1">{timestamp}</span>
-    <IconBtn title="Modifier"><Icon><RetryPaths /></Icon></IconBtn>
-    <IconBtn title="Joindre">
-      <Icon><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" /></Icon>
+    <button onClick={onRetry} className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors" title="Réessayer">
+      <Icon><RetryPaths /></Icon>
+    </button>
+    <IconBtn title="Modifier">
+      <Icon>
+        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+      </Icon>
     </IconBtn>
     <CopyButton content={content} />
   </div>
 );
 
-const AssistantMessageActions = ({ content }: { content: string }) => (
+const AssistantMessageActions = ({ content, onRetry }: { content: string; onRetry: () => void }) => (
   <div className="flex items-center gap-1 mt-2 ml-1">
     <CopyButton content={content} />
-    <IconBtn title="Bonne réponse">
-      <Icon><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" /><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></Icon>
+    <IconBtn title="Donner un retour positif">
+      <Icon>
+        <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" />
+        <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+      </Icon>
     </IconBtn>
-    <IconBtn title="Mauvaise réponse">
-      <Icon><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z" /><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" /></Icon>
+    <IconBtn title="Donner un retour négatif">
+      <Icon>
+        <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z" />
+        <path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" />
+      </Icon>
     </IconBtn>
-    <IconBtn title="Régénérer"><Icon><RetryPaths /></Icon></IconBtn>
+    <button onClick={onRetry} className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors" title="Réessayer">
+      <Icon><RetryPaths /></Icon>
+    </button>
   </div>
 );
 
 export default function ChatArea({
+  conversationId,
   messages,
   onUserMessage,
   onAssistantReply,
+  onTruncate,
   userName = "Juju",
 }: ChatAreaProps) {
   const [input, setInput] = useState("");
@@ -112,17 +131,30 @@ export default function ChatArea({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const triggerReply = (convId: string) => {
+    setIsThinking(true);
+    setTimeout(() => {
+      onAssistantReply(convId);
+      setIsThinking(false);
+    }, randomDelay());
+  };
+
+  const handleRetry = (msg: Message, index: number) => {
+    if (isThinking || !conversationId) return;
+    const keepUpToId =
+      msg.role === "user" ? msg.id : messages[index - 1]?.id;
+    if (!keepUpToId) return;
+    onTruncate(keepUpToId);
+    triggerReply(conversationId);
+  };
+
   const handleSubmit = () => {
     if (!input.trim() || isThinking) return;
     const text = input.trim();
     setInput("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     const convId = onUserMessage(text);
-    setIsThinking(true);
-    setTimeout(() => {
-      onAssistantReply(convId);
-      setIsThinking(false);
-    }, 500 + Math.random() * 2500);
+    triggerReply(convId);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -180,15 +212,22 @@ export default function ChatArea({
           {messages.map((msg, i) => {
             const isLast = i === messages.length - 1;
             return (
-              <div key={msg.id} className={`flex gap-2 group ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div
+                key={msg.id}
+                className={`flex gap-2 group ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+              >
                 <div className="flex flex-col">
-                  <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed max-w-lg ${msg.role === "user" ? "bg-(--hover-bg) text-(--foreground)" : "text-(--foreground)"}`}>
+                  <div
+                    className={`px-4 py-3 rounded-2xl text-sm leading-relaxed max-w-lg ${msg.role === "user" ? "bg-(--hover-bg) text-(--foreground)" : "text-(--foreground)"}`}
+                  >
                     {msg.content}
                   </div>
-                  {msg.role === "user" && <UserMessageActions timestamp={formatTime(msg.id)} content={msg.content} />}
+                  {msg.role === "user" && (
+                    <UserMessageActions timestamp={formatTime(msg.id)} content={msg.content} onRetry={() => handleRetry(msg, i)} />
+                  )}
                   {msg.role === "assistant" && (
                     <>
-                      <AssistantMessageActions content={msg.content} />
+                      <AssistantMessageActions content={msg.content} onRetry={() => handleRetry(msg, i)} />
                       {isLast && !isThinking && (
                         <span className="text-(--accent) mt-2 ml-1">
                           <GlaudeIcon size={48} />
@@ -237,7 +276,9 @@ function ChatInput({
   disabled?: boolean;
 }) {
   return (
-    <div className={`bg-(--input-bg) rounded-2xl shadow-sm border border-(--border) ${disabled ? "opacity-60" : ""}`}>
+    <div
+      className={`bg-(--input-bg) rounded-2xl shadow-sm border border-(--border) ${disabled ? "opacity-60" : ""}`}
+    >
       <div className="px-4 pt-3 pb-2">
         <textarea
           ref={textareaRef}
@@ -253,19 +294,41 @@ function ChatInput({
       </div>
       <div className="flex items-center justify-between px-3 pb-3">
         <button className="flex items-center justify-center w-7 h-7 rounded-full hover:bg-(--hover-bg) text-(--muted) transition-colors">
-          <Icon><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></Icon>
+          <Icon>
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </Icon>
         </button>
         <div className="flex items-center gap-2">
           <button className="flex items-center gap-1.5 text-xs text-(--muted) hover:text-(--foreground) transition-colors px-2 py-1 rounded-md hover:bg-(--hover-bg)">
             <span>Bombé 4.6</span>
-            <Icon size={12}><polyline points="6 9 12 15 18 9" /></Icon>
+            <Icon size={12}>
+              <polyline points="6 9 12 15 18 9" />
+            </Icon>
           </button>
           <button className="text-(--muted) hover:text-(--foreground) transition-colors">
-            <Icon><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" /></Icon>
+            <Icon>
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" y1="19" x2="12" y2="23" />
+              <line x1="8" y1="23" x2="16" y2="23" />
+            </Icon>
           </button>
           {value.trim() && !disabled && (
-            <button onClick={onSubmit} className="w-7 h-7 rounded-full bg-(--foreground) flex items-center justify-center hover:opacity-80 transition-opacity">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <button
+              onClick={onSubmit}
+              className="w-7 h-7 rounded-full bg-(--foreground) flex items-center justify-center hover:opacity-80 transition-opacity"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <line x1="22" y1="2" x2="11" y2="13" />
                 <polygon points="22 2 15 22 11 13 2 9 22 2" />
               </svg>

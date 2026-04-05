@@ -69,6 +69,16 @@ export default function Home() {
     return convId;
   };
 
+  const handleTruncate = (keepUpToId: string) => {
+    setConversations((prev) =>
+      prev.map((conv) => {
+        if (conv.id !== activeId) return conv;
+        const idx = conv.messages.findIndex((m) => m.id === keepUpToId);
+        return { ...conv, messages: conv.messages.slice(0, idx + 1) };
+      })
+    );
+  };
+
   const handleAssistantReply = (convId: string) => {
     const assistantMessage: Message = {
       id: `${Date.now()}-assistant`,
@@ -92,9 +102,11 @@ export default function Home() {
       />
       <main className="flex-1 flex flex-col overflow-hidden">
         <ChatArea
+          conversationId={activeId}
           messages={activeConversation?.messages ?? []}
           onUserMessage={handleUserMessage}
           onAssistantReply={handleAssistantReply}
+          onTruncate={handleTruncate}
           userName="Juju"
         />
       </main>
