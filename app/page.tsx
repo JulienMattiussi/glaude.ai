@@ -5,6 +5,7 @@ import Sidebar from "./components/Sidebar";
 import ChatArea from "./components/ChatArea";
 import DiscussionsPage from "./components/DiscussionsPage";
 import SearchModal from "./components/SearchModal";
+import PersonnalisePage from "./components/PersonnalisePage";
 
 interface Message {
   id: string;
@@ -18,7 +19,7 @@ interface Conversation {
   messages: Message[];
 }
 
-type View = "chat" | "discussions";
+type View = "chat" | "discussions" | "personnaliser";
 
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -139,6 +140,8 @@ export default function Home() {
             onNewConversation={handleNewConversation}
             onSelectConversation={handleSelectConversation}
           />
+        ) : view === "personnaliser" ? (
+          <PersonnalisePage />
         ) : (
           <ChatArea
             conversationId={activeId}

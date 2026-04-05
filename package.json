@@ -2,6 +2,7 @@
   "name": "glaude-code",
   "version": "0.1.0",
   "private": true,
+  "author": "YavaDeus",
   "scripts": {
     "dev": "next dev -p 4321",
     "build": "next build",
