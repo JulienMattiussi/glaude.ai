@@ -59,14 +59,12 @@ export default function Icon() {
     `M${cx2 + innerR},${cy2} A${innerR},${innerR} 0 1,1 ${cx2 - innerR},${cy2} A${innerR},${innerR} 0 1,1 ${cx2 + innerR},${cy2} Z`;
 
   return new ImageResponse(
-    (
-      <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} xmlns="http://www.w3.org/2000/svg">
-        {ellipsePaths.map((d, i) => (
-          <path key={i} d={d} fill={color} />
-        ))}
-        <path d={ringPath} fill={color} fillRule="evenodd" />
-      </svg>
-    ),
+    <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`} xmlns="http://www.w3.org/2000/svg">
+      {ellipsePaths.map((d, i) => (
+        <path key={i} d={d} fill={color} />
+      ))}
+      <path d={ringPath} fill={color} fillRule="evenodd" />
+    </svg>,
     { width: s, height: s }
   );
 }

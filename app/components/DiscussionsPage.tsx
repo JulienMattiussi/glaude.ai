@@ -2,27 +2,12 @@
 
 import { useState } from "react";
 import { Icon } from "./ui";
+import { relativeTime } from "../lib/time";
+import type { Conversation } from "../types";
 
-interface Conversation {
-  id: string;
-  title: string;
-  messages: { id: string }[];
-}
-
-function relativeTime(timestamp: number): string {
-  const diff = Date.now() - timestamp;
-  const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "il y a moins d'une minute";
-  if (minutes < 60) return `il y a ${minutes} minute${minutes > 1 ? "s" : ""}`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `il y a ${hours} heure${hours > 1 ? "s" : ""}`;
-  const days = Math.floor(hours / 24);
-  return `il y a ${days} jour${days > 1 ? "s" : ""}`;
-}
-
-function lastMessageTime(conv: Conversation): string {
-  const last = conv.messages.at(-1);
-  if (!last) return relativeTime(parseInt(conv.id));
+function lastMessageTime(conversation: Conversation): string {
+  const last = conversation.messages.at(-1);
+  if (!last) return relativeTime(parseInt(conversation.id));
   return relativeTime(parseInt(last.id.split("-")[0]));
 }
 
@@ -75,9 +60,7 @@ export default function DiscussionsPage({
         </div>
 
         {conversations.length > 0 && (
-          <p className="text-sm text-(--muted) mb-4">
-            Vos conversations avec Glaude
-          </p>
+          <p className="text-sm text-(--muted) mb-4">Vos conversations avec Glaude</p>
         )}
 
         <div className="flex flex-col">
@@ -86,14 +69,18 @@ export default function DiscussionsPage({
               {search ? "Aucune conversation trouvée." : "Aucune conversation pour le moment."}
             </p>
           ) : (
-            filtered.map((conv) => (
+            filtered.map((conversation) => (
               <button
-                key={conv.id}
-                onClick={() => onSelectConversation(conv.id)}
+                key={conversation.id}
+                onClick={() => onSelectConversation(conversation.id)}
                 className="flex flex-col items-start gap-0.5 py-4 border-b border-(--border) hover:bg-(--hover-bg) px-2 rounded-sm transition-colors text-left"
               >
-                <span className="text-sm font-medium text-(--foreground)">{conv.title}</span>
-                <span className="text-xs text-(--muted)">Dernier message {lastMessageTime(conv)}</span>
+                <span className="text-sm font-medium text-(--foreground)">
+                  {conversation.title}
+                </span>
+                <span className="text-xs text-(--muted)">
+                  Dernier message {lastMessageTime(conversation)}
+                </span>
               </button>
             ))
           )}

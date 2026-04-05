@@ -1,12 +1,6 @@
 import { ReactNode } from "react";
 
-export const Icon = ({
-  size = 16,
-  children,
-}: {
-  size?: number;
-  children: ReactNode;
-}) => (
+export const Icon = ({ size = 16, children }: { size?: number; children: ReactNode }) => (
   <svg
     width={size}
     height={size}
@@ -21,13 +15,7 @@ export const Icon = ({
   </svg>
 );
 
-export const IconBtn = ({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) => (
+export const IconBtn = ({ title, children }: { title: string; children: ReactNode }) => (
   <button
     className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors"
     title={title}

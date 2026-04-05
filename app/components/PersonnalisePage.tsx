@@ -3,7 +3,16 @@
 import { Icon } from "./ui";
 
 const UfoIcon = ({ size = 80 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 80 80" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 80 80"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     {/* Dome */}
     <path d="M28 38 C28 28 52 28 52 38" />
     <ellipse cx="40" cy="30" rx="10" ry="9" />
@@ -37,7 +46,8 @@ export default function PersonnalisePage() {
         <div className="text-center flex flex-col gap-2">
           <h1 className="text-2xl font-bold text-(--foreground)">Personnaliser Glaude</h1>
           <p className="text-sm text-(--muted) leading-relaxed max-w-sm mx-auto">
-            Les compétences, connecteurs et plugins façonnent la manière dont Glaude travaille avec vous.
+            Les compétences, connecteurs et plugins façonnent la manière dont Glaude travaille avec
+            vous.
           </p>
         </div>
 
@@ -56,7 +66,9 @@ export default function PersonnalisePage() {
               </Icon>
             </CardIcon>
             <div className="flex flex-col gap-0.5">
-              <span className="text-sm font-semibold text-(--foreground)">Connectez vos applications</span>
+              <span className="text-sm font-semibold text-(--foreground)">
+                Connectez vos applications
+              </span>
               <span className="text-sm text-(--muted) leading-relaxed">
                 Permettez à Glaude de lire et d&apos;écrire dans les outils que vous utilisez déjà.
               </span>
@@ -72,7 +84,9 @@ export default function PersonnalisePage() {
               </Icon>
             </CardIcon>
             <div className="flex flex-col gap-0.5">
-              <span className="text-sm font-semibold text-(--foreground)">Créer de nouvelles compétences</span>
+              <span className="text-sm font-semibold text-(--foreground)">
+                Créer de nouvelles compétences
+              </span>
               <span className="text-sm text-(--muted) leading-relaxed">
                 Apprenez à Glaude vos processus, normes d&apos;équipe et expertise.
               </span>

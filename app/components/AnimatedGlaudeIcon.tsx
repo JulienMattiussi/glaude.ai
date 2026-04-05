@@ -45,7 +45,14 @@ export default function AnimatedGlaudeIcon({
         ))}
       </g>
       <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2.2">
-        <animate attributeName="r" values="3;5;3" dur={dur} repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1; 0.45 0 0.55 1" />
+        <animate
+          attributeName="r"
+          values="3;5;3"
+          dur={dur}
+          repeatCount="indefinite"
+          calcMode="spline"
+          keySplines="0.45 0 0.55 1; 0.45 0 0.55 1"
+        />
       </circle>
     </svg>
   );

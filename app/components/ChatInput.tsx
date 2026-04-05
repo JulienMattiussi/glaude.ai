@@ -16,6 +16,16 @@ const ToolIcons = () => (
   </div>
 );
 
+export interface ChatInputProps {
+  value: string;
+  onChange: (v: string) => void;
+  onSubmit: () => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  onInput: () => void;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
+  disabled?: boolean;
+}
+
 export const ChatInput = ({
   value,
   onChange,
@@ -24,15 +34,7 @@ export const ChatInput = ({
   onInput,
   textareaRef,
   disabled,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  onSubmit: () => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
-  onInput: () => void;
-  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
-  disabled?: boolean;
-}) => (
+}: ChatInputProps) => (
   <div
     className={`bg-(--input-bg) rounded-2xl shadow-sm border border-(--border) ${disabled ? "opacity-60" : ""}`}
   >

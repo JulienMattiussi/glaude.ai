@@ -2,28 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Icon } from "./ui";
+import { relativeTime } from "../lib/time";
+import type { Conversation } from "../types";
 
-interface Conversation {
-  id: string;
-  title: string;
-  messages: { id: string; content: string }[];
-}
-
-function relativeTime(timestamp: number): string {
-  const diff = Date.now() - timestamp;
-  const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "À l'instant";
-  if (minutes < 60) return `Il y a ${minutes} min`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `Il y a ${hours} h`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `Il y a ${days} j`;
-  return "Mois dernier";
-}
-
-function lastActivity(conv: Conversation): number {
-  const last = conv.messages.at(-1);
-  if (!last) return parseInt(conv.id);
+function lastActivity(conversation: Conversation): number {
+  const last = conversation.messages.at(-1);
+  if (!last) return parseInt(conversation.id);
   return parseInt(last.id.split("-")[0]);
 }
 
@@ -58,10 +42,6 @@ export default function SearchModal({
         );
 
   useEffect(() => {
-    setHighlighted(0);
-  }, [query]);
-
-  useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
@@ -86,7 +66,6 @@ export default function SearchModal({
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
-        {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-(--border)">
           <span className="text-(--muted) shrink-0">
             <Icon>
@@ -98,7 +77,10 @@ export default function SearchModal({
             ref={inputRef}
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setHighlighted(0);
+            }}
             placeholder="Rechercher dans les discussions."
             className="flex-1 bg-transparent text-sm text-(--foreground) placeholder:text-(--muted) focus:outline-none"
           />
@@ -113,24 +95,27 @@ export default function SearchModal({
           </button>
         </div>
 
-        {/* Results */}
         <div className="py-2 max-h-80 overflow-y-auto">
           {results.length === 0 ? (
             <p className="text-sm text-(--muted) text-center py-6">Aucun résultat</p>
           ) : (
-            results.map((conv, i) => (
+            results.map((conversation, i) => (
               <button
-                key={conv.id}
-                onClick={() => onSelect(conv.id)}
+                key={conversation.id}
+                onClick={() => onSelect(conversation.id)}
                 onMouseEnter={() => setHighlighted(i)}
                 className={`flex items-center gap-3 w-full px-4 py-2.5 text-left transition-colors ${
                   i === highlighted ? "bg-(--hover-bg)" : ""
                 }`}
               >
                 <ChatIcon />
-                <span className="flex-1 text-sm text-(--foreground) truncate">{conv.title}</span>
+                <span className="flex-1 text-sm text-(--foreground) truncate">
+                  {conversation.title}
+                </span>
                 <span className="text-xs text-(--muted) shrink-0">
-                  {i === 0 && query.trim() === "" ? "Entrée" : relativeTime(lastActivity(conv))}
+                  {i === 0 && query.trim() === ""
+                    ? "Entrée"
+                    : relativeTime(lastActivity(conversation))}
                 </span>
               </button>
             ))
