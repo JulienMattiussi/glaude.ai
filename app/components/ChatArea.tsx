@@ -17,6 +17,7 @@ interface ChatAreaProps {
   onUserMessage: (text: string) => string;
   onAssistantReply: (convId: string) => void;
   onTruncate: (keepUpToId: string) => void;
+  onEditMessage: (messageId: string, newContent: string) => void;
   userName?: string;
 }
 
@@ -82,17 +83,51 @@ const ToolIcons = () => (
   </div>
 );
 
-const UserMessageActions = ({ timestamp, content, onRetry }: { timestamp: string; content: string; onRetry: () => void }) => (
+const EditMessageUI = ({
+  value,
+  onChange,
+  onSave,
+  onCancel,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onSave: () => void;
+  onCancel: () => void;
+}) => (
+  <div className="flex flex-col gap-2 w-full max-w-lg">
+    <textarea
+      autoFocus
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSave(); }
+        if (e.key === "Escape") onCancel();
+      }}
+      rows={3}
+      className="w-full resize-none rounded-xl border-2 border-blue-400 bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) focus:outline-none"
+    />
+    <div className="flex justify-end gap-2">
+      <button onClick={onCancel} className="px-3 py-1.5 rounded-lg text-sm text-(--foreground) hover:bg-(--hover-bg) transition-colors border border-(--border)">
+        Annuler
+      </button>
+      <button onClick={onSave} className="px-3 py-1.5 rounded-lg text-sm text-white bg-(--foreground) hover:opacity-80 transition-opacity">
+        Enregistrer
+      </button>
+    </div>
+  </div>
+);
+
+const UserMessageActions = ({ timestamp, content, onRetry, onEdit }: { timestamp: string; content: string; onRetry: () => void; onEdit: () => void }) => (
   <div className="flex items-center gap-1 mt-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
     <span className="text-xs text-(--muted) mr-1">{timestamp}</span>
     <button onClick={onRetry} className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors" title="Réessayer">
       <Icon><RetryPaths /></Icon>
     </button>
-    <IconBtn title="Modifier">
+    <button onClick={onEdit} className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors" title="Modifier">
       <Icon>
-        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
       </Icon>
-    </IconBtn>
+    </button>
     <CopyButton content={content} />
   </div>
 );
@@ -124,10 +159,13 @@ export default function ChatArea({
   onUserMessage,
   onAssistantReply,
   onTruncate,
+  onEditMessage,
   userName = "Juju",
 }: ChatAreaProps) {
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -137,6 +175,14 @@ export default function ChatArea({
       onAssistantReply(convId);
       setIsThinking(false);
     }, randomDelay());
+  };
+
+  const handleEditSave = () => {
+    if (!editingId || !editingText.trim() || !conversationId) return;
+    onEditMessage(editingId, editingText.trim());
+    onTruncate(editingId);
+    setEditingId(null);
+    triggerReply(conversationId);
   };
 
   const handleRetry = (msg: Message, index: number) => {
@@ -217,13 +263,27 @@ export default function ChatArea({
                 className={`flex gap-2 group ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div className="flex flex-col">
-                  <div
-                    className={`px-4 py-3 rounded-2xl text-sm leading-relaxed max-w-lg ${msg.role === "user" ? "bg-(--hover-bg) text-(--foreground)" : "text-(--foreground)"}`}
-                  >
-                    {msg.content}
-                  </div>
-                  {msg.role === "user" && (
-                    <UserMessageActions timestamp={formatTime(msg.id)} content={msg.content} onRetry={() => handleRetry(msg, i)} />
+                  {msg.role === "user" && editingId === msg.id ? (
+                    <EditMessageUI
+                      value={editingText}
+                      onChange={setEditingText}
+                      onSave={handleEditSave}
+                      onCancel={() => setEditingId(null)}
+                    />
+                  ) : (
+                    <div
+                      className={`px-4 py-3 rounded-2xl text-sm leading-relaxed max-w-lg ${msg.role === "user" ? "bg-(--hover-bg) text-(--foreground)" : "text-(--foreground)"}`}
+                    >
+                      {msg.content}
+                    </div>
+                  )}
+                  {msg.role === "user" && editingId !== msg.id && (
+                    <UserMessageActions
+                      timestamp={formatTime(msg.id)}
+                      content={msg.content}
+                      onRetry={() => handleRetry(msg, i)}
+                      onEdit={() => { setEditingId(msg.id); setEditingText(msg.content); }}
+                    />
                   )}
                   {msg.role === "assistant" && (
                     <>

@@ -69,6 +69,20 @@ export default function Home() {
     return convId;
   };
 
+  const handleEditMessage = (messageId: string, newContent: string) => {
+    setConversations((prev) =>
+      prev.map((conv) => {
+        if (conv.id !== activeId) return conv;
+        return {
+          ...conv,
+          messages: conv.messages.map((m) =>
+            m.id === messageId ? { ...m, content: newContent } : m
+          ),
+        };
+      })
+    );
+  };
+
   const handleTruncate = (keepUpToId: string) => {
     setConversations((prev) =>
       prev.map((conv) => {
@@ -107,6 +121,7 @@ export default function Home() {
           onUserMessage={handleUserMessage}
           onAssistantReply={handleAssistantReply}
           onTruncate={handleTruncate}
+          onEditMessage={handleEditMessage}
           userName="Juju"
         />
       </main>
