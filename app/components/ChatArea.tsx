@@ -33,6 +33,32 @@ const ToolIcons = () => (
   </div>
 );
 
+const UserMessageActions = ({ timestamp }: { timestamp: string }) => (
+  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+    <span className="text-xs text-[var(--muted)] mr-1">{timestamp}</span>
+    {/* Retry */}
+    <button className="p-1.5 rounded-md text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--hover-bg)] transition-colors" title="Modifier">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="1 4 1 10 7 10" />
+        <path d="M3.51 15a9 9 0 1 0 .49-3.5" />
+      </svg>
+    </button>
+    {/* Paperclip */}
+    <button className="p-1.5 rounded-md text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--hover-bg)] transition-colors" title="Joindre">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+      </svg>
+    </button>
+    {/* Copy */}
+    <button className="p-1.5 rounded-md text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--hover-bg)] transition-colors" title="Copier">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" />
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+      </svg>
+    </button>
+  </div>
+);
+
 const MessageActions = () => (
   <div className="flex items-center gap-1 mt-2 ml-1">
     {/* Copy */}
@@ -204,18 +230,25 @@ export default function ChatArea({
                 return (
                   <div
                     key={msg.id}
-                    className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                    className={`flex gap-2 group ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div className="flex flex-col">
                       <div
                         className={`px-4 py-3 rounded-2xl text-sm leading-relaxed max-w-lg ${
                           msg.role === "user"
-                            ? "bg-[var(--hover-bg)] text-[var(--foreground)]"
-                            : "text-[var(--foreground)]"
+                            ? "bg-(--hover-bg) text-(--foreground)"
+                            : "text-(--foreground)"
                         }`}
                       >
                         {msg.content}
                       </div>
+                      {msg.role === "user" && (
+                        <div className="flex justify-end">
+                          <UserMessageActions
+                            timestamp={new Date(parseInt(msg.id)).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                          />
+                        </div>
+                      )}
                       {msg.role === "assistant" && (
                         <>
                           <MessageActions />
