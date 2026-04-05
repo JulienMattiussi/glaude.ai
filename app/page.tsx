@@ -17,13 +17,7 @@ interface Conversation {
 }
 
 export default function Home() {
-  const [conversations, setConversations] = useState<Conversation[]>([
-    {
-      id: "1",
-      title: "Greeting in French",
-      messages: [],
-    },
-  ]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const activeConversation = conversations.find((c) => c.id === activeId) ?? null;

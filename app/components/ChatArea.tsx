@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import GlaudeIcon from "./GlaudeIcon";
+import AnimatedGlaudeIcon from "./AnimatedGlaudeIcon";
 
 interface Message {
   id: string;
@@ -86,7 +87,7 @@ export default function ChatArea({
         <div className="flex-1 flex flex-col items-center justify-center gap-8 px-4">
           <div className="flex items-center gap-3">
             <span className="text-[var(--accent)]">
-              <GlaudeIcon size={32} />
+              <AnimatedGlaudeIcon size={32} />
             </span>
             <h1 className="text-3xl font-medium text-[var(--foreground)]">
               {getGreeting()}, {userName}.
