@@ -62,7 +62,7 @@ export default function Home() {
             onAssistantReply={store.addAssistantReply}
             onTruncate={store.truncate}
             onEditMessage={store.editMessage}
-            userName="Juju"
+            userName="ma danrée"
           />
         )}
       </main>
