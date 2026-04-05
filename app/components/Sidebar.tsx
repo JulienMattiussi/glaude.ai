@@ -42,6 +42,8 @@ interface SidebarProps {
   conversations: { id: string; title: string }[];
   activeConversationId: string | null;
   onSelectConversation: (id: string) => void;
+  activeView: string;
+  onNavigate: (view: string) => void;
 }
 
 export default function Sidebar({
@@ -49,6 +51,8 @@ export default function Sidebar({
   conversations,
   activeConversationId,
   onSelectConversation,
+  activeView,
+  onNavigate,
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -113,6 +117,8 @@ export default function Sidebar({
           collapsed={collapsed}
           icon={<Icon><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></Icon>}
           label="Discussions"
+          onClick={() => onNavigate("discussions")}
+          active={activeView === "discussions"}
         />
         <NavItem
           collapsed={collapsed}

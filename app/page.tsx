@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import ChatArea from "./components/ChatArea";
+import DiscussionsPage from "./components/DiscussionsPage";
 
 interface Message {
   id: string;
@@ -16,9 +17,12 @@ interface Conversation {
   messages: Message[];
 }
 
+type View = "chat" | "discussions";
+
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [view, setView] = useState<View>("chat");
 
   const activeConversation = conversations.find((c) => c.id === activeId) ?? null;
 
@@ -31,10 +35,12 @@ export default function Home() {
     };
     setConversations((prev) => [newConv, ...prev]);
     setActiveId(id);
+    setView("chat");
   };
 
   const handleSelectConversation = (id: string) => {
     setActiveId(id);
+    setView("chat");
   };
 
   const handleUserMessage = (text: string): string => {
@@ -113,17 +119,27 @@ export default function Home() {
         conversations={conversations}
         activeConversationId={activeId}
         onSelectConversation={handleSelectConversation}
+        activeView={view}
+        onNavigate={setView}
       />
       <main className="flex-1 flex flex-col overflow-hidden">
-        <ChatArea
-          conversationId={activeId}
-          messages={activeConversation?.messages ?? []}
-          onUserMessage={handleUserMessage}
-          onAssistantReply={handleAssistantReply}
-          onTruncate={handleTruncate}
-          onEditMessage={handleEditMessage}
-          userName="Juju"
-        />
+        {view === "discussions" ? (
+          <DiscussionsPage
+            conversations={conversations}
+            onNewConversation={handleNewConversation}
+            onSelectConversation={handleSelectConversation}
+          />
+        ) : (
+          <ChatArea
+            conversationId={activeId}
+            messages={activeConversation?.messages ?? []}
+            onUserMessage={handleUserMessage}
+            onAssistantReply={handleAssistantReply}
+            onTruncate={handleTruncate}
+            onEditMessage={handleEditMessage}
+            userName="Juju"
+          />
+        )}
       </main>
     </div>
   );
