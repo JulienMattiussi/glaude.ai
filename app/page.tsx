@@ -92,7 +92,6 @@ export default function Home() {
       />
       <main className="flex-1 flex flex-col overflow-hidden">
         <ChatArea
-          conversationId={activeId}
           messages={activeConversation?.messages ?? []}
           onUserMessage={handleUserMessage}
           onAssistantReply={handleAssistantReply}
