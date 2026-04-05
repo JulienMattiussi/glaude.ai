@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import GlaudeIcon from "./GlaudeIcon";
 import AnimatedGlaudeIcon from "./AnimatedGlaudeIcon";
-import { Icon, IconBtn } from "./ui";
+import { Icon } from "./ui";
 
 interface Message {
   id: string;
@@ -100,30 +100,59 @@ const EditMessageUI = ({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       onKeyDown={(e) => {
-        if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSave(); }
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          onSave();
+        }
         if (e.key === "Escape") onCancel();
       }}
       rows={3}
       className="w-full resize-none rounded-xl border-2 border-blue-400 bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) focus:outline-none"
     />
     <div className="flex justify-end gap-2">
-      <button onClick={onCancel} className="px-3 py-1.5 rounded-lg text-sm text-(--foreground) hover:bg-(--hover-bg) transition-colors border border-(--border)">
+      <button
+        onClick={onCancel}
+        className="px-3 py-1.5 rounded-lg text-sm text-(--foreground) hover:bg-(--hover-bg) transition-colors border border-(--border)"
+      >
         Annuler
       </button>
-      <button onClick={onSave} className="px-3 py-1.5 rounded-lg text-sm text-white bg-(--foreground) hover:opacity-80 transition-opacity">
+      <button
+        onClick={onSave}
+        className="px-3 py-1.5 rounded-lg text-sm text-white bg-(--foreground) hover:opacity-80 transition-opacity"
+      >
         Enregistrer
       </button>
     </div>
   </div>
 );
 
-const UserMessageActions = ({ timestamp, content, onRetry, onEdit }: { timestamp: string; content: string; onRetry: () => void; onEdit: () => void }) => (
+const UserMessageActions = ({
+  timestamp,
+  content,
+  onRetry,
+  onEdit,
+}: {
+  timestamp: string;
+  content: string;
+  onRetry: () => void;
+  onEdit: () => void;
+}) => (
   <div className="flex items-center gap-1 mt-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
     <span className="text-xs text-(--muted) mr-1">{timestamp}</span>
-    <button onClick={onRetry} className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors" title="Réessayer">
-      <Icon><RetryPaths /></Icon>
+    <button
+      onClick={onRetry}
+      className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors"
+      title="Réessayer"
+    >
+      <Icon>
+        <RetryPaths />
+      </Icon>
     </button>
-    <button onClick={onEdit} className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors" title="Modifier">
+    <button
+      onClick={onEdit}
+      className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors"
+      title="Modifier"
+    >
       <Icon>
         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
       </Icon>
@@ -132,26 +161,168 @@ const UserMessageActions = ({ timestamp, content, onRetry, onEdit }: { timestamp
   </div>
 );
 
-const AssistantMessageActions = ({ content, onRetry }: { content: string; onRetry: () => void }) => (
-  <div className="flex items-center gap-1 mt-2 ml-1">
-    <CopyButton content={content} />
-    <IconBtn title="Donner un retour positif">
-      <Icon>
-        <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" />
-        <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
-      </Icon>
-    </IconBtn>
-    <IconBtn title="Donner un retour négatif">
-      <Icon>
-        <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z" />
-        <path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" />
-      </Icon>
-    </IconBtn>
-    <button onClick={onRetry} className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors" title="Réessayer">
-      <Icon><RetryPaths /></Icon>
-    </button>
-  </div>
-);
+const FEEDBACK_OPTIONS = [
+  "Bogue de l'interface utilisateur",
+  "Refus excessif",
+  "N'a pas entièrement respecté ma demande",
+  "Incorrect.e.s sur le plan factuel",
+  "Réponse incomplète",
+  "Aurait dû effectuer une recherche web",
+  "Signaler le contenu.",
+  "Non conforme à la Constitution de Glaude",
+  "Autre",
+];
+
+const FeedbackModal = ({
+  title,
+  placeholder,
+  withDropdown,
+  onClose,
+}: {
+  title: string;
+  placeholder: string;
+  withDropdown?: boolean;
+  onClose: () => void;
+}) => {
+  const [category, setCategory] = useState("");
+  const [details, setDetails] = useState("");
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
+      onClick={onClose}
+    >
+      <div
+        className="bg-(--input-bg) rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6 flex flex-col gap-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className="text-lg font-semibold text-(--foreground)">{title}</h2>
+
+        {withDropdown && (
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm text-(--foreground)">
+              Quel type de problème souhaitez-vous signaler ?{" "}
+              <span className="text-(--muted)">(facultatif)</span>
+            </label>
+            <div className="relative">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full appearance-none rounded-lg border border-(--border) bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) focus:outline-none focus:border-blue-400 pr-8"
+              >
+                <option value="">Sélectionner...</option>
+                {FEEDBACK_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+              <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-(--muted)">
+                <Icon size={14}>
+                  <polyline points="6 9 12 15 18 9" />
+                </Icon>
+              </span>
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm text-(--foreground)">
+            Veuillez fournir des détails : <span className="text-(--muted)">(facultatif)</span>
+          </label>
+          <textarea
+            autoFocus
+            value={details}
+            onChange={(e) => setDetails(e.target.value)}
+            placeholder={placeholder}
+            rows={3}
+            className="w-full resize-none rounded-lg border border-(--border) bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) placeholder:text-(--muted) focus:outline-none focus:border-blue-400"
+          />
+        </div>
+
+        <p className="text-xs text-(--muted) italic leading-relaxed">
+          En soumettant ce rapport, vous envoyez l&apos;intégralité de la conversation actuelle à
+          Glaude pour nous aider à améliorer nos modèles.{" "}
+        </p>
+
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-lg text-sm text-white bg-(--foreground) hover:opacity-80 transition-opacity"
+          >
+            Envoyer
+          </button>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-lg text-sm text-(--foreground) hover:bg-(--hover-bg) transition-colors border border-(--border)"
+          >
+            Annuler
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AssistantMessageActions = ({
+  content,
+  onRetry,
+}: {
+  content: string;
+  onRetry: () => void;
+}) => {
+  const [modal, setModal] = useState<"positive" | "negative" | null>(null);
+  return (
+    <>
+      <div className="flex items-center gap-1 mt-2 ml-1">
+        <CopyButton content={content} />
+        <button
+          onClick={() => setModal("positive")}
+          className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors"
+          title="Donner un retour positif"
+        >
+          <Icon>
+            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" />
+            <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+          </Icon>
+        </button>
+        <button
+          onClick={() => setModal("negative")}
+          className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors"
+          title="Donner un retour négatif"
+        >
+          <Icon>
+            <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z" />
+            <path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" />
+          </Icon>
+        </button>
+        <button
+          onClick={onRetry}
+          className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors"
+          title="Réessayer"
+        >
+          <Icon>
+            <RetryPaths />
+          </Icon>
+        </button>
+      </div>
+      {modal === "positive" && (
+        <FeedbackModal
+          title="Donner un retour positif"
+          placeholder="Dans quelle mesure cette réponse était-elle satisfaisante ?"
+          onClose={() => setModal(null)}
+        />
+      )}
+      {modal === "negative" && (
+        <FeedbackModal
+          title="Donner un retour négatif"
+          placeholder="Dans quelle mesure cette réponse était-elle insatisfaisante ?"
+          withDropdown
+          onClose={() => setModal(null)}
+        />
+      )}
+    </>
+  );
+};
 
 export default function ChatArea({
   conversationId,
@@ -187,8 +358,7 @@ export default function ChatArea({
 
   const handleRetry = (msg: Message, index: number) => {
     if (isThinking || !conversationId) return;
-    const keepUpToId =
-      msg.role === "user" ? msg.id : messages[index - 1]?.id;
+    const keepUpToId = msg.role === "user" ? msg.id : messages[index - 1]?.id;
     if (!keepUpToId) return;
     onTruncate(keepUpToId);
     triggerReply(conversationId);
@@ -282,12 +452,18 @@ export default function ChatArea({
                       timestamp={formatTime(msg.id)}
                       content={msg.content}
                       onRetry={() => handleRetry(msg, i)}
-                      onEdit={() => { setEditingId(msg.id); setEditingText(msg.content); }}
+                      onEdit={() => {
+                        setEditingId(msg.id);
+                        setEditingText(msg.content);
+                      }}
                     />
                   )}
                   {msg.role === "assistant" && (
                     <>
-                      <AssistantMessageActions content={msg.content} onRetry={() => handleRetry(msg, i)} />
+                      <AssistantMessageActions
+                        content={msg.content}
+                        onRetry={() => handleRetry(msg, i)}
+                      />
                       {isLast && !isThinking && (
                         <span className="text-(--accent) mt-2 ml-1">
                           <GlaudeIcon size={48} />
