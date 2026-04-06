@@ -42,6 +42,7 @@ export default function ChatArea({
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
   const [lightning, setLightning] = useState(false);
+  const [boltCount, setBoltCount] = useState(0);
   const lastLightningCountRef = useRef(0);
   const lightningTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -49,9 +50,12 @@ export default function ChatArea({
     const count = messages
       .filter((m) => m.role === "assistant" && /^(prou+t\s*)+$/i.test(m.content.trim()))
       .reduce((sum, m) => sum + m.content.trim().split(/\s+/).length, 0);
-    const crossed = Math.floor(count / 20) * 20;
-    if (crossed > 0 && crossed !== lastLightningCountRef.current) {
-      lastLightningCountRef.current = crossed;
+    // First trigger at 20, then every 10
+    const threshold = count < 20 ? 0 : 20 + Math.floor((count - 20) / 10) * 10;
+    if (threshold > 0 && threshold !== lastLightningCountRef.current) {
+      lastLightningCountRef.current = threshold;
+      const newBoltCount = 1 + (threshold - 20) / 10;
+      setBoltCount(newBoltCount);
       if (lightningTimerRef.current) clearTimeout(lightningTimerRef.current);
       setLightning(true);
       lightningTimerRef.current = setTimeout(() => setLightning(false), 1400);
@@ -146,7 +150,7 @@ export default function ChatArea({
   if (messages.length === 0 && !isThinking) {
     return (
       <>
-        <LightningEffect active={lightning} />
+        <LightningEffect active={lightning} boltCount={boltCount} />
         <WelcomeScreen userName={userName} inputProps={inputProps} />
       </>
     );
@@ -154,7 +158,7 @@ export default function ChatArea({
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
-      <LightningEffect active={lightning} />
+      <LightningEffect active={lightning} boltCount={boltCount} />
       {conversationTitle &&
         onRenameConversation &&
         onDeleteConversation &&

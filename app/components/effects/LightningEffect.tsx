@@ -1,16 +1,8 @@
 "use client";
 
+// Reveal order: center first, then left, right, left-center, right-center
 const BOLTS: [number, number][][] = [
-  [
-    [20, 0],
-    [13, 13],
-    [24, 26],
-    [9, 40],
-    [21, 54],
-    [7, 68],
-    [19, 82],
-    [13, 100],
-  ],
+  // center
   [
     [50, 0],
     [58, 12],
@@ -21,6 +13,18 @@ const BOLTS: [number, number][][] = [
     [47, 83],
     [52, 100],
   ],
+  // left
+  [
+    [20, 0],
+    [13, 13],
+    [24, 26],
+    [9, 40],
+    [21, 54],
+    [7, 68],
+    [19, 82],
+    [13, 100],
+  ],
+  // right
   [
     [78, 0],
     [85, 14],
@@ -31,17 +35,45 @@ const BOLTS: [number, number][][] = [
     [74, 84],
     [79, 100],
   ],
+  // left-center
+  [
+    [35, 0],
+    [28, 12],
+    [38, 25],
+    [24, 38],
+    [36, 52],
+    [22, 66],
+    [34, 80],
+    [28, 100],
+  ],
+  // right-center
+  [
+    [65, 0],
+    [72, 13],
+    [58, 27],
+    [70, 41],
+    [60, 55],
+    [71, 69],
+    [62, 83],
+    [67, 100],
+  ],
 ];
 
 function pts(bolt: [number, number][]): string {
   return bolt.map(([x, y]) => `${x},${y}`).join(" ");
 }
 
-export function LightningEffect({ active }: { active: boolean }) {
+interface Props {
+  active: boolean;
+  boltCount: number;
+}
+
+export function LightningEffect({ active, boltCount }: Props) {
   if (!active) return null;
 
+  const bolts = BOLTS.slice(0, Math.min(boltCount, BOLTS.length));
+
   return (
-    // key forces a full remount (restarts CSS animations) on each trigger
     <div key={Date.now()} className="fixed inset-0 pointer-events-none z-9999">
       {/* Screen flash */}
       <div
@@ -52,8 +84,7 @@ export function LightningEffect({ active }: { active: boolean }) {
         }}
       />
 
-      {/* One absolutely-positioned SVG per bolt so CSS animation targets a div */}
-      {BOLTS.map((bolt, i) => (
+      {bolts.map((bolt, i) => (
         <div
           key={i}
           className="absolute inset-0"
@@ -84,8 +115,6 @@ export function LightningEffect({ active }: { active: boolean }) {
                 </feMerge>
               </filter>
             </defs>
-
-            {/* Wide soft halo */}
             <polyline
               points={pts(bolt)}
               stroke="rgba(100,180,255,0.3)"
@@ -95,7 +124,6 @@ export function LightningEffect({ active }: { active: boolean }) {
               strokeLinejoin="round"
               filter={`url(#halo-${i})`}
             />
-            {/* Electric blue glow */}
             <polyline
               points={pts(bolt)}
               stroke="rgba(140,210,255,0.85)"
@@ -105,7 +133,6 @@ export function LightningEffect({ active }: { active: boolean }) {
               strokeLinejoin="round"
               filter={`url(#glow-${i})`}
             />
-            {/* Bright white-blue */}
             <polyline
               points={pts(bolt)}
               stroke="rgba(220,240,255,0.95)"
@@ -114,7 +141,6 @@ export function LightningEffect({ active }: { active: boolean }) {
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-            {/* Hot white core */}
             <polyline
               points={pts(bolt)}
               stroke="white"
