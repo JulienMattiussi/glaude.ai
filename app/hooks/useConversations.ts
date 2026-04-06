@@ -64,6 +64,23 @@ export function useConversations() {
     );
   };
 
+  const toggleFavorite = (id: string) => {
+    setConversations((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, favorite: !c.favorite } : c))
+    );
+  };
+
+  const renameConversation = (id: string, title: string) => {
+    setConversations((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, title } : c))
+    );
+  };
+
+  const deleteConversation = (id: string) => {
+    setConversations((prev) => prev.filter((c) => c.id !== id));
+    if (activeId === id) setActiveId(null);
+  };
+
   const truncate = (keepUpToId: string) => {
     setConversations((prev) =>
       prev.map((conv) => {
@@ -101,5 +118,8 @@ export function useConversations() {
     editMessage,
     truncate,
     addAssistantReply,
+    deleteConversation,
+    renameConversation,
+    toggleFavorite,
   };
 }

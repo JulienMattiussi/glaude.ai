@@ -32,6 +32,9 @@ export default function Home() {
         activeView={view}
         onNewConversation={newAndNavigate}
         onSelectConversation={selectAndNavigate}
+        onDeleteConversation={store.deleteConversation}
+        onRenameConversation={store.renameConversation}
+        onToggleFavoriteConversation={store.toggleFavorite}
         onNavigate={setView}
         onOpenSearch={() => setSearchOpen(true)}
       />

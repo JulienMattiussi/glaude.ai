@@ -1,58 +1,88 @@
 <!-- BEGIN:nextjs-agent-rules -->
-
 # This is NOT the Next.js you know
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-
+Breaking changes — APIs, conventions, and file structure may differ from training data. Read `node_modules/next/dist/docs/` before writing any code.
 <!-- END:nextjs-agent-rules -->
 
 # Project: glaude-code
 
-A simplified clone of claude.ai built with Next.js 16 (App Router), React 19, TypeScript, and Tailwind CSS v4.
+A parody clone of claude.ai — **"Le Glaude"** — built with Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4.
 
-## What it is
-
-- UI replica of claude.ai — sidebar + chat interface
-- All chat responses return `"prout"` (hardcoded, no real AI backend)
-- French locale, greeter uses the user's name "Juju"
-
-## Dev server
-
-- Runs on **port 4321** (not 3000)
-- `make start` or `npm run dev`
-
-## Structure
-
-- `app/page.tsx` — root page, holds all conversation state + `view` state (`"chat"` | `"discussions"`) + `searchOpen` state
-- `app/components/Sidebar.tsx` — animated collapsible sidebar; props: `onNewConversation`, `conversations`, `activeConversationId`, `onSelectConversation`, `activeView`, `onNavigate`, `onOpenSearch`
-- `app/components/ChatArea.tsx` — welcome screen + message thread orchestrator (lean, delegates to sub-components)
-- `app/components/ChatInput.tsx` — bottom textarea toolbar with model picker, mic, send button, tool icons row
-- `app/components/CopyButton.tsx` — clipboard copy button with checkmark feedback
-- `app/components/EditMessageUI.tsx` — inline edit textarea with Annuler/Enregistrer
-- `app/components/UserMessageActions.tsx` — hover-reveal row under user messages (timestamp, retry, pencil, copy)
-- `app/components/AssistantMessageActions.tsx` — action row under assistant messages (copy, thumbs up/down, retry) + manages FeedbackModal state
-- `app/components/FeedbackModal.tsx` — feedback modal; `withDropdown` prop adds category selector for negative feedback
-- `app/components/DiscussionsPage.tsx` — full-page conversation list with search input and relative timestamps
-- `app/components/SearchModal.tsx` — spotlight-style search modal; shows last 3 convs when empty, filters by title+content when typing; keyboard nav (↑↓ Enter Escape)
-- `app/components/GlaudeIcon.tsx` — static anus-like icon (11 thin ellipses + animated circle, `cy+ry=10.7` keeps inner tips fixed)
-- `app/components/AnimatedGlaudeIcon.tsx` — pulsating version; `fast` prop (0.6s thinking vs 2.4s idle)
-- `app/components/ui.tsx` — shared primitives: `Icon` (SVG wrapper, default size 16), `IconBtn`
-- `app/globals.css` — CSS custom properties for the beige/cream color palette
-
-## Navigation / view model
-
-`page.tsx` owns a `view: "chat" | "discussions"` state. Selecting a conversation always switches to `"chat"`. The "Discussions" sidebar item sets view to `"discussions"`. The "Rechercher" item opens `SearchModal` as an overlay (no view change).
-
-## Sidebar animation
-
-Collapse/expand is animated via a single render path: `transition-[width] duration-300` on the wrapper div (inline style `width: collapsed ? "3rem" : "14rem"`), labels use `w-0 opacity-0` ↔ `w-auto opacity-100` transitions. No conditional mount/unmount.
-
+- French locale, user is **"ma danrée"** (reference to the film *La Soupe aux choux*)
+- No real AI backend — responses are hardcoded (see below)
+- Dev server on **port 4321**: `make start` or `npm run dev`
+- Makefile targets: `install / start / build / lint / typecheck / format / format-check`
 
 ## Naming conventions
 
-- Claude → **Glaude** everywhere in UI
-- Sonnet → **Bombé** everywhere in UI (e.g. model picker shows "Bombé 4.6")
+- Claude → **Glaude** / **Le Glaude**
+- Sonnet → **Bombé** (model picker shows "Bombé 4.6")
 
-## Makefile
+## Architecture
 
-Follows the pattern of other repos in `/home/julien/Documents/MyRepos/` — `make help` lists targets, standard `install / start / build / lint / typecheck / format / format-check` targets.
+### State & hooks (`app/hooks/`)
+
+- `useConversations.ts` — all conversation CRUD; `addAssistantReply(convId, delay)` checks for recipe keywords before falling back to prout generation
+- `useLocalStorage.ts` — generic hook; conversations persisted under key `"glaude-conversations"`
+- `useTypewriter.ts` — streams assistant messages; char-by-char for short texts (≤200 chars, 20ms/char), word-by-word for long texts (30ms/word); uses `useLayoutEffect` to avoid flicker
+
+### Pure logic (`app/lib/`)
+
+- `prout.ts` — `generateProutContent(delay)`: 1–6 words of "pro[u]+t", u count random 1–3, count proportional to delay (500–3000ms)
+- `recipes.ts` — `findRecipe(prompt)`: matches against 5 cabbage recipes by keyword array; returns markdown with title → image → content
+- `greeting.ts` — `getGreeting()`: time-based French greeting
+- `time.ts` — `formatTime(id)`, `relativeTime(timestamp)`
+- `delay.ts` — `randomDelay()`: 500–3000ms
+
+### Types (`app/types.ts`)
+
+`Message`, `Conversation`, `View` ("chat" | "discussions" | "personnaliser") — imported everywhere, never redefined locally.
+
+### Pages & routing (`app/page.tsx`)
+
+Owns `view: View`, `searchOpen: boolean`. Uses `useConversations` as `store`. Navigation helper `selectAndNavigate(id)` switches view to "chat".
+
+### Components (`app/components/`)
+
+**Layout**
+- `Sidebar.tsx` — animated collapse (single render path, `transition-[width]`, inline style width 3rem↔14rem, labels fade with `w-0 opacity-0`); props include `activeView`, `onNavigate: (view: View) => void`, `onOpenSearch`
+- `ChatArea.tsx` — orchestrator: delegates to `WelcomeScreen` or `MessageList` + `ChatInput`
+- `WelcomeScreen.tsx` — empty state with animated icon + greeting
+- `MessageList.tsx` — scrollable list, owns `messagesEndRef`, auto-scrolls on new content
+- `MessageBubble.tsx` — single message row; uses `RecipeMarkdown` for assistant, plain div for user
+
+**Input**
+- `ChatInput.tsx` — exports `ChatInputProps` interface; textarea + model picker ("Bombé 4.6") + send button
+- `EditMessageUI.tsx` — inline edit with Annuler/Enregistrer, Enter saves, Escape cancels
+
+**Message actions**
+- `UserMessageActions.tsx` — hover-reveal: timestamp, retry, pencil, copy
+- `AssistantMessageActions.tsx` — copy, thumbs up/down, retry; owns modal state
+- `FeedbackModal.tsx` — `withDropdown` prop for negative feedback category selector
+- `CopyButton.tsx` — clipboard + checkmark feedback
+
+**Search & navigation**
+- `SearchModal.tsx` — spotlight overlay; last 3 convs when empty, filters title+content; keyboard nav ↑↓ Enter Escape; resets highlight on input change (not in useEffect)
+- `DiscussionsPage.tsx` — full-page list with relative timestamps
+- `PersonnalisePage.tsx` — UFO icon (150px) + 2 cards; "Personnaliser Glaude"
+
+**Markdown**
+- `RecipeMarkdown.tsx` — renders assistant markdown; overrides `<ol>` with `InteractiveOl`: clickable numbered steps (circle → checkmark, strikethrough on done); uses `ExtraProps` from react-markdown for typing
+- Uses `react-markdown` with custom `components` prop
+
+**Icons**
+- `GlaudeIcon.tsx` — static: 11 thin ellipses (anus-like, `cy+ry=10.7` keeps inner tips fixed) + circle
+- `AnimatedGlaudeIcon.tsx` — pulsating: `fast` prop (0.6s thinking / 2.4s idle)
+- `ui.tsx` — `Icon` (SVG wrapper, default size 16), `IconBtn`
+
+### OG image (`app/opengraph-image.tsx`)
+
+1200×630, cream background, Glaude icon + "Glaude" wordmark + "BY YavaDeus" byline.
+
+## Special feature: cabbage recipes
+
+When user prompt matches any keyword from 5 recipes, `addAssistantReply` returns the full recipe instead of prout. Recipes: Choucroute garnie, Chou farci, Gratin de chou-fleur, Potée auvergnate, Soupe aux choux. Each has multiple typo-tolerant keywords, a Wikimedia Commons image, and markdown content. The soupe aux choux image is the flying saucer prop from the Louis-de-Funès museum. 🛸
+
+## CSS
+
+`globals.css` — CSS custom properties (beige/cream palette) + `.prose` styles for markdown (headings, lists, bold, img with `border-radius: 0.75rem; max-height: 280px; object-fit: cover`).

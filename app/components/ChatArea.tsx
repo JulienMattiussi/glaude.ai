@@ -5,7 +5,7 @@ import { WelcomeScreen } from "./WelcomeScreen";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { useTypewriter } from "../hooks/useTypewriter";
-import { randomDelay } from "../lib/timing";
+import { randomDelay } from "../lib/delay";
 import type { Message } from "../types";
 
 interface ChatAreaProps {
