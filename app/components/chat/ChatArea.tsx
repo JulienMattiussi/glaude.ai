@@ -4,27 +4,38 @@ import { useState, useRef } from "react";
 import { WelcomeScreen } from "./WelcomeScreen";
 import { MessageList } from "../messages/MessageList";
 import { ChatInput } from "./ChatInput";
+import { ConversationHeader } from "./ConversationHeader";
 import { useTypewriter } from "../../hooks/useTypewriter";
 import { randomDelay } from "../../lib/delay";
 import type { Message } from "../../types";
 
 interface ChatAreaProps {
   conversationId: string | null;
+  conversationTitle?: string;
+  conversationFavorite?: boolean;
   messages: Message[];
   onUserMessage: (text: string) => string;
   onAssistantReply: (convId: string, delay: number) => void;
   onTruncate: (keepUpToId: string) => void;
   onEditMessage: (messageId: string, newContent: string) => void;
+  onRenameConversation?: (title: string) => void;
+  onDeleteConversation?: () => void;
+  onToggleFavoriteConversation?: () => void;
   userName?: string;
 }
 
 export default function ChatArea({
   conversationId,
+  conversationTitle,
+  conversationFavorite,
   messages,
   onUserMessage,
   onAssistantReply,
   onTruncate,
   onEditMessage,
+  onRenameConversation,
+  onDeleteConversation,
+  onToggleFavoriteConversation,
   userName = "Juju",
 }: ChatAreaProps) {
   const [input, setInput] = useState("");
@@ -97,6 +108,15 @@ export default function ChatArea({
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
+      {conversationTitle && onRenameConversation && onDeleteConversation && onToggleFavoriteConversation && (
+        <ConversationHeader
+          title={conversationTitle}
+          favorite={conversationFavorite}
+          onRename={onRenameConversation}
+          onDelete={onDeleteConversation}
+          onToggleFavorite={onToggleFavoriteConversation}
+        />
+      )}
       <MessageList
         messages={messages}
         isThinking={isThinking}
