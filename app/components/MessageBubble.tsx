@@ -1,6 +1,6 @@
 "use client";
 
-import ReactMarkdown from "react-markdown";
+import { RecipeMarkdown } from "./RecipeMarkdown";
 import GlaudeIcon from "./GlaudeIcon";
 import { EditMessageUI } from "./EditMessageUI";
 import { UserMessageActions } from "./UserMessageActions";
@@ -56,9 +56,7 @@ export const MessageBubble = ({
             {displayContent}
           </div>
         ) : (
-          <div className="text-sm leading-relaxed max-w-lg text-(--foreground) prose prose-sm prose-neutral px-1">
-            <ReactMarkdown>{displayContent}</ReactMarkdown>
-          </div>
+          <RecipeMarkdown content={displayContent} />
         )}
 
         {msg.role === "user" && !isEditing && (
