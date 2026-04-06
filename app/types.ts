@@ -11,4 +11,4 @@ export interface Conversation {
   favorite?: boolean;
 }
 
-export type View = "chat" | "discussions" | "personnaliser";
+export type View = "chat" | "discussions" | "projets" | "personnaliser";

@@ -7,6 +7,7 @@ import Sidebar from "./components/sidebar/Sidebar";
 import ChatArea from "./components/chat/ChatArea";
 import DiscussionsPage from "./components/pages/DiscussionsPage";
 import PersonnalisePage from "./components/pages/PersonnalisePage";
+import ProjectsPage from "./components/pages/ProjectsPage";
 import SearchModal from "./components/sidebar/SearchModal";
 
 export default function Home() {
@@ -56,6 +57,7 @@ export default function Home() {
             onSelectConversation={selectAndNavigate}
           />
         )}
+        {view === "projets" && <ProjectsPage />}
         {view === "personnaliser" && <PersonnalisePage />}
         {view === "chat" && (
           <ChatArea

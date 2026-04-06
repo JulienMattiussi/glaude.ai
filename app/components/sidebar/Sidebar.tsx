@@ -140,6 +140,17 @@ export default function Sidebar({
           collapsed={collapsed}
           icon={
             <Icon>
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+            </Icon>
+          }
+          label="Projets"
+          onClick={() => onNavigate("projets")}
+          active={activeView === "projets"}
+        />
+        <NavItem
+          collapsed={collapsed}
+          icon={
+            <Icon>
               <polygon points="12 2 2 7 12 12 22 7 12 2" />
               <polyline points="2 17 12 22 22 17" />
               <polyline points="2 12 12 17 22 12" />
