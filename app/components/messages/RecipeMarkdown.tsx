@@ -61,12 +61,38 @@ const InteractiveOl = ({ children }: { children: React.ReactNode }) => {
   return <ol className="flex flex-col gap-1 my-3 pl-0">{styledChildren}</ol>;
 };
 
-const components: Components = {
+const makeComponents = (onSend?: (text: string) => void): Components => ({
   ol: ({ children }) => <InteractiveOl>{children}</InteractiveOl>,
-};
+  a: ({ href, children }) => {
+    if (onSend && href?.startsWith("recipe:")) {
+      const query = decodeURIComponent(href.slice("recipe:".length));
+      return (
+        <button
+          onClick={() => onSend(query)}
+          className="text-(--accent) underline underline-offset-2 hover:opacity-70 transition-opacity text-left"
+        >
+          {children}
+        </button>
+      );
+    }
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    );
+  },
+});
 
-export const RecipeMarkdown = ({ content }: { content: string }) => (
+export const RecipeMarkdown = ({
+  content,
+  onSend,
+}: {
+  content: string;
+  onSend?: (text: string) => void;
+}) => (
   <div className="text-sm leading-relaxed max-w-lg text-(--foreground) prose prose-sm prose-neutral px-1">
-    <ReactMarkdown components={components}>{content}</ReactMarkdown>
+    <ReactMarkdown components={makeComponents(onSend)} urlTransform={(url) => url}>
+      {content}
+    </ReactMarkdown>
   </div>
 );

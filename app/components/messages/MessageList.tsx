@@ -12,6 +12,7 @@ interface MessageListProps {
   streamedText: string;
   editingId: string | null;
   editingText: string;
+  onSend: (text: string) => void;
   onRetry: (msg: Message, index: number) => void;
   onEditStart: (msg: Message) => void;
   onEditSave: () => void;
@@ -26,6 +27,7 @@ export const MessageList = ({
   streamedText,
   editingId,
   editingText,
+  onSend,
   onRetry,
   onEditStart,
   onEditSave,
@@ -51,6 +53,7 @@ export const MessageList = ({
             streamedText={streamedText}
             editingId={editingId}
             editingText={editingText}
+            onSend={onSend}
             onRetry={() => onRetry(msg, i)}
             onEdit={() => onEditStart(msg)}
             onEditSave={onEditSave}

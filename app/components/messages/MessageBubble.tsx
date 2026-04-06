@@ -16,6 +16,7 @@ interface MessageBubbleProps {
   streamedText: string;
   editingId: string | null;
   editingText: string;
+  onSend: (text: string) => void;
   onRetry: () => void;
   onEdit: () => void;
   onEditSave: () => void;
@@ -31,6 +32,7 @@ export const MessageBubble = ({
   streamedText,
   editingId,
   editingText,
+  onSend,
   onRetry,
   onEdit,
   onEditSave,
@@ -56,7 +58,7 @@ export const MessageBubble = ({
             {displayContent}
           </div>
         ) : (
-          <RecipeMarkdown content={displayContent} />
+          <RecipeMarkdown content={displayContent} onSend={onSend} />
         )}
 
         {msg.role === "user" && !isEditing && (

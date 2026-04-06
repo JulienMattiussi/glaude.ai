@@ -62,6 +62,11 @@ export default function ChatArea({
     triggerReply(onUserMessage(text));
   };
 
+  const handleSend = (text: string) => {
+    if (isThinking) return;
+    triggerReply(onUserMessage(text));
+  };
+
   const handleRetry = (msg: Message, index: number) => {
     if (isThinking || !conversationId) return;
     const keepUpToId = msg.role === "user" ? msg.id : messages[index - 1]?.id;
@@ -127,6 +132,7 @@ export default function ChatArea({
         streamedText={streamedText}
         editingId={editingId}
         editingText={editingText}
+        onSend={handleSend}
         onRetry={handleRetry}
         onEditStart={(msg) => {
           setEditingId(msg.id);
