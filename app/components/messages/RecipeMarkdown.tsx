@@ -32,14 +32,25 @@ const InteractiveOl = ({ children }: { children: React.ReactNode }) => {
               }`}
             >
               {done ? (
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               ) : (
                 i + 1
               )}
             </span>
-            <span className={`text-sm leading-relaxed pt-0.5 transition-all duration-200 ${done ? "line-through text-(--muted)" : "text-(--foreground)"}`}>
+            <span
+              className={`text-sm leading-relaxed pt-0.5 transition-all duration-200 ${done ? "line-through text-(--muted)" : "text-(--foreground)"}`}
+            >
               {liChild.props.children}
             </span>
           </li>

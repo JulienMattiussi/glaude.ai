@@ -1,8 +1,8 @@
 "use client";
 
-import AnimatedGlaudeIcon from "./AnimatedGlaudeIcon";
+import AnimatedGlaudeIcon from "../icons/AnimatedGlaudeIcon";
 import { ChatInput } from "./ChatInput";
-import { getGreeting } from "../lib/greeting";
+import { getGreeting } from "../../lib/greeting";
 import type { ChatInputProps } from "./ChatInput";
 
 export const WelcomeScreen = ({

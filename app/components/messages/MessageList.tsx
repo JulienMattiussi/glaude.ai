@@ -1,9 +1,9 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import AnimatedGlaudeIcon from "./AnimatedGlaudeIcon";
+import AnimatedGlaudeIcon from "../icons/AnimatedGlaudeIcon";
 import { MessageBubble } from "./MessageBubble";
-import type { Message } from "../types";
+import type { Message } from "../../types";
 
 interface MessageListProps {
   messages: Message[];

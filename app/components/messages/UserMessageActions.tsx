@@ -1,6 +1,6 @@
 "use client";
 
-import { Icon } from "./ui";
+import { Icon } from "../icons/Icon";
 import { CopyButton } from "./CopyButton";
 
 export const UserMessageActions = ({

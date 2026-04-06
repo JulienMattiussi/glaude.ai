@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Icon } from "./ui";
-import { relativeTime } from "../lib/time";
-import type { Conversation } from "../types";
+import { Icon } from "../icons/Icon";
+import { relativeTime } from "../../lib/time";
+import type { Conversation } from "../../types";
 
 function lastActivity(conversation: Conversation): number {
   const last = conversation.messages.at(-1);

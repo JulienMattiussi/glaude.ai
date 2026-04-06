@@ -1,14 +1,16 @@
 <!-- BEGIN:nextjs-agent-rules -->
+
 # This is NOT the Next.js you know
 
 Breaking changes — APIs, conventions, and file structure may differ from training data. Read `node_modules/next/dist/docs/` before writing any code.
+
 <!-- END:nextjs-agent-rules -->
 
 # Project: glaude-code
 
 A parody clone of claude.ai — **"Le Glaude"** — built with Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4.
 
-- French locale, user is **"ma danrée"** (reference to the film *La Soupe aux choux*)
+- French locale, user is **"ma danrée"** (reference to the film _La Soupe aux choux_)
 - No real AI backend — responses are hardcoded (see below)
 - Dev server on **port 4321**: `make start` or `npm run dev`
 - Makefile targets: `install / start / build / lint / typecheck / format / format-check`
@@ -45,6 +47,7 @@ Owns `view: View`, `searchOpen: boolean`. Uses `useConversations` as `store`. Na
 ### Components (`app/components/`)
 
 **Layout**
+
 - `Sidebar.tsx` — animated collapse (single render path, `transition-[width]`, inline style width 3rem↔14rem, labels fade with `w-0 opacity-0`); props include `activeView`, `onNavigate: (view: View) => void`, `onOpenSearch`
 - `ChatArea.tsx` — orchestrator: delegates to `WelcomeScreen` or `MessageList` + `ChatInput`
 - `WelcomeScreen.tsx` — empty state with animated icon + greeting
@@ -52,25 +55,30 @@ Owns `view: View`, `searchOpen: boolean`. Uses `useConversations` as `store`. Na
 - `MessageBubble.tsx` — single message row; uses `RecipeMarkdown` for assistant, plain div for user
 
 **Input**
+
 - `ChatInput.tsx` — exports `ChatInputProps` interface; textarea + model picker ("Bombé 4.6") + send button
 - `EditMessageUI.tsx` — inline edit with Annuler/Enregistrer, Enter saves, Escape cancels
 
 **Message actions**
+
 - `UserMessageActions.tsx` — hover-reveal: timestamp, retry, pencil, copy
 - `AssistantMessageActions.tsx` — copy, thumbs up/down, retry; owns modal state
 - `FeedbackModal.tsx` — `withDropdown` prop for negative feedback category selector
 - `CopyButton.tsx` — clipboard + checkmark feedback
 
 **Search & navigation**
+
 - `SearchModal.tsx` — spotlight overlay; last 3 convs when empty, filters title+content; keyboard nav ↑↓ Enter Escape; resets highlight on input change (not in useEffect)
 - `DiscussionsPage.tsx` — full-page list with relative timestamps
 - `PersonnalisePage.tsx` — UFO icon (150px) + 2 cards; "Personnaliser Glaude"
 
 **Markdown**
+
 - `RecipeMarkdown.tsx` — renders assistant markdown; overrides `<ol>` with `InteractiveOl`: clickable numbered steps (circle → checkmark, strikethrough on done); uses `ExtraProps` from react-markdown for typing
 - Uses `react-markdown` with custom `components` prop
 
 **Icons**
+
 - `GlaudeIcon.tsx` — static: 11 thin ellipses (anus-like, `cy+ry=10.7` keeps inner tips fixed) + circle
 - `AnimatedGlaudeIcon.tsx` — pulsating: `fast` prop (0.6s thinking / 2.4s idle)
 - `ui.tsx` — `Icon` (SVG wrapper, default size 16), `IconBtn`

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Icon } from "./ui";
+import { Icon } from "../icons/Icon";
 
 const FEEDBACK_OPTIONS = [
   "Bogue de l'interface utilisateur",

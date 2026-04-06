@@ -7,7 +7,8 @@ interface Recipe {
 const RECIPES: Recipe[] = [
   {
     keywords: ["choucroute", "choucroûte", "choucroute garnie", "choucrout", "choucroûte garnie"],
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/3/31/Choucroute_alsacienne_garnie.JPG",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/3/31/Choucroute_alsacienne_garnie.JPG",
     content: `# 🥬 Choucroute garnie alsacienne
 
 **Pour 6 personnes · Préparation : 30 min · Cuisson : 2h**
@@ -81,7 +82,13 @@ Disposer la choucroute au centre d'un grand plat, les viandes et saucisses par-d
 Ajouter un peu de crème fraîche épaisse dans le jus de cuisson en fin de cuisson pour une sauce onctueuse. 🤌`,
   },
   {
-    keywords: ["gratin de chou-fleur", "gratin chou fleur", "gratin de choufleur", "chou-fleur gratin", "choufleur"],
+    keywords: [
+      "gratin de chou-fleur",
+      "gratin chou fleur",
+      "gratin de choufleur",
+      "chou-fleur gratin",
+      "choufleur",
+    ],
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/6/6d/Gratin_chouchou.JPG",
     content: `# 🌸 Gratin de chou-fleur à la béchamel gratinée
 
@@ -115,8 +122,15 @@ Ajouter un peu de crème fraîche épaisse dans le jus de cuisson en fin de cuis
 - **Version curry** : infuser une c. à café de curry dans la béchamel. 🍛`,
   },
   {
-    keywords: ["potée auvergnate", "potee auvergnate", "potée auvergnat", "potee auvergnat", "potée au chou"],
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/47/La_Thuili%C3%A8re%2C_potee_auvergnate.jpg",
+    keywords: [
+      "potée auvergnate",
+      "potee auvergnate",
+      "potée auvergnat",
+      "potee auvergnat",
+      "potée au chou",
+    ],
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/4/47/La_Thuili%C3%A8re%2C_potee_auvergnate.jpg",
     content: `# 🍲 Potée auvergnate au chou vert
 
 **Pour 6 personnes · Préparation : 30 min · Cuisson : 2h30**
@@ -151,7 +165,8 @@ Servir dans un grand plat creux avec le bouillon. En Auvergne, on mange d'abord 
   },
   {
     keywords: ["soupe aux choux", "soupe au chou", "soupe choux", "soupe chou"],
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/3/30/Soucoupe_volante_%28sans_fils%29%2C_vue_face%2C_La_Soupe_aux_choux%2C_Mus%C3%A9e_Louis-de-Fun%C3%A8s_St-Rapha%C3%ABl.png",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/3/30/Soucoupe_volante_%28sans_fils%29%2C_vue_face%2C_La_Soupe_aux_choux%2C_Mus%C3%A9e_Louis-de-Fun%C3%A8s_St-Rapha%C3%ABl.png",
     content: `# 🛸 Soupe aux choux (recette de René Riffard, telle que transmise à La Denrée)
 
 **Pour 4 personnes · Préparation : 20 min · Cuisson : 1h · Puissance olfactive : extraterrestre**

@@ -71,9 +71,7 @@ export function useConversations() {
   };
 
   const renameConversation = (id: string, title: string) => {
-    setConversations((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, title } : c))
-    );
+    setConversations((prev) => prev.map((c) => (c.id === id ? { ...c, title } : c)));
   };
 
   const deleteConversation = (id: string) => {

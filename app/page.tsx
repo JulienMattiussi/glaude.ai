@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useConversations } from "./hooks/useConversations";
 import type { View } from "./types";
-import Sidebar from "./components/Sidebar";
-import ChatArea from "./components/ChatArea";
-import DiscussionsPage from "./components/DiscussionsPage";
-import PersonnalisePage from "./components/PersonnalisePage";
-import SearchModal from "./components/SearchModal";
+import Sidebar from "./components/sidebar/Sidebar";
+import ChatArea from "./components/chat/ChatArea";
+import DiscussionsPage from "./components/pages/DiscussionsPage";
+import PersonnalisePage from "./components/pages/PersonnalisePage";
+import SearchModal from "./components/sidebar/SearchModal";
 
 export default function Home() {
   const store = useConversations();

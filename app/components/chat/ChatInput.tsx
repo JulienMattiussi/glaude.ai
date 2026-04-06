@@ -1,6 +1,6 @@
 "use client";
 
-import { Icon } from "./ui";
+import { Icon } from "../icons/Icon";
 
 const ToolIcons = () => (
   <div className="flex items-center gap-1.5 text-xs text-(--muted)">

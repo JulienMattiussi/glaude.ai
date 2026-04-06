@@ -1,6 +1,6 @@
 "use client";
 
-import { Icon } from "./ui";
+import { Icon } from "../icons/Icon";
 
 const UfoIcon = ({ size = 80 }: { size?: number }) => (
   <svg

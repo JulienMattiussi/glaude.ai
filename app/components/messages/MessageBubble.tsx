@@ -1,12 +1,12 @@
 "use client";
 
 import { RecipeMarkdown } from "./RecipeMarkdown";
-import GlaudeIcon from "./GlaudeIcon";
+import GlaudeIcon from "../icons/GlaudeIcon";
 import { EditMessageUI } from "./EditMessageUI";
 import { UserMessageActions } from "./UserMessageActions";
 import { AssistantMessageActions } from "./AssistantMessageActions";
-import { formatTime } from "../lib/time";
-import type { Message } from "../types";
+import { formatTime } from "../../lib/time";
+import type { Message } from "../../types";
 
 interface MessageBubbleProps {
   msg: Message;

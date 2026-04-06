@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Icon } from "./ui";
+import { Icon } from "../icons/Icon";
 import { CopyButton } from "./CopyButton";
 import { FeedbackModal } from "./FeedbackModal";
 

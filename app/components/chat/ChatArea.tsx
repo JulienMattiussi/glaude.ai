@@ -2,11 +2,11 @@
 
 import { useState, useRef } from "react";
 import { WelcomeScreen } from "./WelcomeScreen";
-import { MessageList } from "./MessageList";
+import { MessageList } from "../messages/MessageList";
 import { ChatInput } from "./ChatInput";
-import { useTypewriter } from "../hooks/useTypewriter";
-import { randomDelay } from "../lib/delay";
-import type { Message } from "../types";
+import { useTypewriter } from "../../hooks/useTypewriter";
+import { randomDelay } from "../../lib/delay";
+import type { Message } from "../../types";
 
 interface ChatAreaProps {
   conversationId: string | null;
