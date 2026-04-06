@@ -1,11 +1,11 @@
 interface Recipe {
-  keyword: string;
+  keywords: string[];
   content: string;
 }
 
 const RECIPES: Recipe[] = [
   {
-    keyword: "choucroute",
+    keywords: ["choucroute", "choucroûte", "choucroute garnie", "choucrout", "choucroûte garnie"],
     content: `# 🥬 Choucroute garnie alsacienne
 
 **Pour 6 personnes · Préparation : 30 min · Cuisson : 2h**
@@ -43,7 +43,7 @@ const RECIPES: Recipe[] = [
 Disposer la choucroute au centre d'un grand plat, les viandes et saucisses par-dessus, les pommes de terre autour. Servir avec de la moutarde de Dijon et... un verre de Riesling bien frais. 🍷`,
   },
   {
-    keyword: "chou farci",
+    keywords: ["chou farci", "choux farcis", "chou farcis", "choux farci"],
     content: `# 🥬 Chou farci à la grand-mère
 
 **Pour 4 personnes · Préparation : 40 min · Cuisson : 1h30**
@@ -78,7 +78,7 @@ Disposer la choucroute au centre d'un grand plat, les viandes et saucisses par-d
 Ajouter un peu de crème fraîche épaisse dans le jus de cuisson en fin de cuisson pour une sauce onctueuse. 🤌`,
   },
   {
-    keyword: "gratin de chou-fleur",
+    keywords: ["gratin de chou-fleur", "gratin chou fleur", "gratin de choufleur", "chou-fleur gratin", "choufleur"],
     content: `# 🌸 Gratin de chou-fleur à la béchamel gratinée
 
 **Pour 4 personnes · Préparation : 20 min · Cuisson : 40 min**
@@ -111,7 +111,7 @@ Ajouter un peu de crème fraîche épaisse dans le jus de cuisson en fin de cuis
 - **Version curry** : infuser une c. à café de curry dans la béchamel. 🍛`,
   },
   {
-    keyword: "potée auvergnate",
+    keywords: ["potée auvergnate", "potee auvergnate", "potée auvergnat", "potee auvergnat", "potée au chou"],
     content: `# 🍲 Potée auvergnate au chou vert
 
 **Pour 6 personnes · Préparation : 30 min · Cuisson : 2h30**
@@ -145,7 +145,7 @@ Ajouter un peu de crème fraîche épaisse dans le jus de cuisson en fin de cuis
 Servir dans un grand plat creux avec le bouillon. En Auvergne, on mange d'abord le bouillon avec du pain de seigle grillé, puis les viandes et légumes. Une tradition qui réchauffe l'âme. ♨️`,
   },
   {
-    keyword: "soupe aux choux",
+    keywords: ["soupe aux choux", "soupe au chou", "soupe choux", "soupe chou"],
     content: `# 🛸 Soupe aux choux (recette de René Riffard, telle que transmise à La Denrée)
 
 **Pour 4 personnes · Préparation : 20 min · Cuisson : 1h · Puissance olfactive : extraterrestre**
@@ -183,7 +183,7 @@ Cette soupe, mijotée avec amour dans les bois du Morvan, a la particularité d'
 export function findRecipe(prompt: string): string | null {
   const lower = prompt.toLowerCase();
   for (const recipe of RECIPES) {
-    if (lower.includes(recipe.keyword.toLowerCase())) {
+    if (recipe.keywords.some((kw) => lower.includes(kw.toLowerCase()))) {
       return recipe.content;
     }
   }
