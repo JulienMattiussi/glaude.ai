@@ -52,7 +52,7 @@ export default function Sidebar({
 
   return (
     <div
-      style={{ width: collapsed ? "3rem" : "14rem" }}
+      style={{ width: collapsed ? "3rem" : "18rem" }}
       className="flex flex-col h-full bg-(--sidebar-bg) border-r border-(--border) transition-[width] duration-300 ease-in-out overflow-hidden shrink-0"
     >
       {/* Header */}
@@ -88,6 +88,7 @@ export default function Sidebar({
             </Icon>
           }
           label="Nouvelle conversation"
+          shortcut="Ctrl+⇧+O"
           onClick={onNewConversation}
         />
         <NavItem
@@ -99,6 +100,7 @@ export default function Sidebar({
             </Icon>
           }
           label="Rechercher"
+          shortcut="Ctrl+K"
           onClick={onOpenSearch}
         />
         <NavItem

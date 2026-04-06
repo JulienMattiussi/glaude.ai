@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useConversations } from "./hooks/useConversations";
 import type { View } from "./types";
 import Sidebar from "./components/sidebar/Sidebar";
@@ -19,6 +19,22 @@ export default function Home() {
     store.selectConversation(id);
     setView("chat");
   };
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+      if (e.key.toLowerCase() === "o" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        store.newConversation();
+        setView("chat");
+      }
+    };
+    document.addEventListener("keydown", handler, { capture: true });
+    return () => document.removeEventListener("keydown", handler, { capture: true });
+  }, [store.newConversation]);
 
   const newAndNavigate = () => {
     store.newConversation();

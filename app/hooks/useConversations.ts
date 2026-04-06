@@ -16,9 +16,7 @@ export function useConversations() {
   const activeConversation = conversations.find((c) => c.id === activeId) ?? null;
 
   const newConversation = () => {
-    const id = Date.now().toString();
-    setConversations((prev) => [{ id, title: "Nouvelle conversation", messages: [] }, ...prev]);
-    setActiveId(id);
+    setActiveId(null);
   };
 
   const selectConversation = (id: string) => setActiveId(id);

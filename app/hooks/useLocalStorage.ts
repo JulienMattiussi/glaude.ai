@@ -3,15 +3,17 @@
 import { useState, useEffect } from "react";
 
 export function useLocalStorage<T>(key: string, initialValue: T) {
-  const [value, setValue] = useState<T>(() => {
-    if (typeof window === "undefined") return initialValue;
+  const [value, setValue] = useState<T>(initialValue);
+
+  useEffect(() => {
     try {
       const item = localStorage.getItem(key);
-      return item ? (JSON.parse(item) as T) : initialValue;
+      if (item) setValue(JSON.parse(item) as T);
     } catch {
-      return initialValue;
+      // unavailable
     }
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
 
   useEffect(() => {
     try {
