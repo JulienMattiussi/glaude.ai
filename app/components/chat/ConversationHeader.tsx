@@ -43,7 +43,7 @@ export function ConversationHeader({
   };
 
   return (
-    <div className="flex items-center px-4 py-2 bg-(--background) shrink-0">
+    <div className="flex items-center pl-12 pr-4 md:px-4 py-2 bg-(--background) shrink-0">
       <button
         ref={btnRef}
         onClick={openMenu}
