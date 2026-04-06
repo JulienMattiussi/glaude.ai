@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import { generateProutContent } from "../lib/prout";
+import { findRecipe } from "../lib/recipes";
 import type { Conversation, Message } from "../types";
 
 export function useConversations() {
@@ -74,16 +75,20 @@ export function useConversations() {
   };
 
   const addAssistantReply = (convId: string, delay: number) => {
-    const assistantMessage: Message = {
-      id: `${Date.now()}-assistant`,
-      role: "assistant",
-      content: generateProutContent(delay),
-    };
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === convId ? { ...conv, messages: [...conv.messages, assistantMessage] } : conv
-      )
-    );
+    setConversations((prev) => {
+      const conv = prev.find((c) => c.id === convId);
+      const lastUserMsg = conv?.messages.findLast((m) => m.role === "user");
+      const content =
+        (lastUserMsg && findRecipe(lastUserMsg.content)) ?? generateProutContent(delay);
+      const assistantMessage: Message = {
+        id: `${Date.now()}-assistant`,
+        role: "assistant",
+        content,
+      };
+      return prev.map((c) =>
+        c.id === convId ? { ...c, messages: [...c.messages, assistantMessage] } : c
+      );
+    });
   };
 
   return {

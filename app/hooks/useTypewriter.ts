@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import type { Message } from "../types";
 
-const CHAR_DELAY_MS = 40;
+const CHAR_DELAY_MS = 20;
 
 export function useTypewriter(messages: Message[]) {
   const [streamingId, setStreamingId] = useState<string | null>(null);

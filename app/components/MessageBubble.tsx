@@ -1,5 +1,6 @@
 "use client";
 
+import ReactMarkdown from "react-markdown";
 import GlaudeIcon from "./GlaudeIcon";
 import { EditMessageUI } from "./EditMessageUI";
 import { UserMessageActions } from "./UserMessageActions";
@@ -50,13 +51,13 @@ export const MessageBubble = ({
             onSave={onEditSave}
             onCancel={onEditCancel}
           />
-        ) : (
-          <div
-            className={`px-4 py-3 rounded-2xl text-sm leading-relaxed max-w-lg ${
-              msg.role === "user" ? "bg-(--hover-bg) text-(--foreground)" : "text-(--foreground)"
-            }`}
-          >
+        ) : msg.role === "user" ? (
+          <div className="px-4 py-3 rounded-2xl text-sm leading-relaxed max-w-lg bg-(--hover-bg) text-(--foreground)">
             {displayContent}
+          </div>
+        ) : (
+          <div className="text-sm leading-relaxed max-w-lg text-(--foreground) prose prose-sm prose-neutral px-1">
+            <ReactMarkdown>{displayContent}</ReactMarkdown>
           </div>
         )}
 
