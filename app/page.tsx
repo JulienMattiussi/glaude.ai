@@ -85,9 +85,17 @@ export default function Home() {
             onAssistantReply={store.addAssistantReply}
             onTruncate={store.truncate}
             onEditMessage={store.editMessage}
-            onRenameConversation={store.activeId ? (title) => store.renameConversation(store.activeId!, title) : undefined}
-            onDeleteConversation={store.activeId ? () => store.deleteConversation(store.activeId!) : undefined}
-            onToggleFavoriteConversation={store.activeId ? () => store.toggleFavorite(store.activeId!) : undefined}
+            onRenameConversation={
+              store.activeId
+                ? (title) => store.renameConversation(store.activeId!, title)
+                : undefined
+            }
+            onDeleteConversation={
+              store.activeId ? () => store.deleteConversation(store.activeId!) : undefined
+            }
+            onToggleFavoriteConversation={
+              store.activeId ? () => store.toggleFavorite(store.activeId!) : undefined
+            }
             userName="ma danrée"
           />
         )}

@@ -24,8 +24,8 @@ A parody clone of claude.ai — **"Le Glaude"** — built with Next.js 16 (App R
 
 ### State & hooks (`app/hooks/`)
 
-- `useConversations.ts` — all conversation CRUD; `addAssistantReply(convId, delay)` checks for recipe keywords before falling back to prout generation
-- `useLocalStorage.ts` — generic hook; conversations persisted under key `"glaude-conversations"`
+- `useConversations.ts` — all conversation CRUD; exports: `newConversation` (sets activeId to null — entry created on first message), `selectConversation`, `addUserMessage`, `editMessage`, `truncate`, `addAssistantReply`, `deleteConversation`, `renameConversation`, `toggleFavorite`
+- `useLocalStorage.ts` — always starts with `initialValue` (SSR-safe), hydrates from localStorage in a `useEffect` to avoid hydration mismatch
 - `useTypewriter.ts` — streams assistant messages; char-by-char for short texts (≤200 chars, 20ms/char), word-by-word for long texts (30ms/word); uses `useLayoutEffect` to avoid flicker
 
 ### Pure logic (`app/lib/`)
@@ -38,50 +38,72 @@ A parody clone of claude.ai — **"Le Glaude"** — built with Next.js 16 (App R
 
 ### Types (`app/types.ts`)
 
-`Message`, `Conversation`, `View` ("chat" | "discussions" | "personnaliser") — imported everywhere, never redefined locally.
+- `Message` — `{ id, role: "user"|"assistant", content }`
+- `Conversation` — `{ id, title, messages, favorite?: boolean }`
+- `View` — `"chat" | "discussions" | "projets" | "personnaliser"`
+
+Imported everywhere, never redefined locally.
 
 ### Pages & routing (`app/page.tsx`)
 
-Owns `view: View`, `searchOpen: boolean`. Uses `useConversations` as `store`. Navigation helper `selectAndNavigate(id)` switches view to "chat".
+Owns `view: View`, `searchOpen: boolean`. Uses `useConversations` as `store`.
 
-### Components (`app/components/`)
+- `selectAndNavigate(id)` — selects conversation + switches to "chat"
+- `newAndNavigate()` — calls `store.newConversation()` + switches to "chat"
+- Global keyboard shortcuts (registered with `{ capture: true }` to intercept browser shortcuts):
+  - `Ctrl+K` / `Cmd+K` → open search modal
+  - `Ctrl+Shift+O` / `Cmd+Shift+O` → new conversation (uses `e.key.toLowerCase()` to handle shift case)
 
-**Layout**
+### Component structure (`app/components/`)
 
-- `Sidebar.tsx` — animated collapse (single render path, `transition-[width]`, inline style width 3rem↔14rem, labels fade with `w-0 opacity-0`); props include `activeView`, `onNavigate: (view: View) => void`, `onOpenSearch`
-- `ChatArea.tsx` — orchestrator: delegates to `WelcomeScreen` or `MessageList` + `ChatInput`
-- `WelcomeScreen.tsx` — empty state with animated icon + greeting
-- `MessageList.tsx` — scrollable list, owns `messagesEndRef`, auto-scrolls on new content
-- `MessageBubble.tsx` — single message row; uses `RecipeMarkdown` for assistant, plain div for user
+Components are organized by domain. Each component has its own file; inline sub-components only if ≤4 lines and used once.
 
-**Input**
+```
+components/
+├── icons/
+│   ├── GlaudeIcon.tsx          static SVG: 11 thin ellipses + circle
+│   ├── AnimatedGlaudeIcon.tsx  pulsating: fast prop (0.6s thinking / 2.4s idle)
+│   └── Icon.tsx                Icon (SVG wrapper, default size 16) + IconBtn
+│
+├── sidebar/
+│   ├── Sidebar.tsx             desktop: width 3rem↔18rem animated; mobile: fixed overlay with backdrop + portal open button
+│   ├── NavItem.tsx             button with icon + label + optional shortcut hint (hover-only)
+│   ├── ConversationItem.tsx    item with portal dropdown menu (favorites, rename, project, delete) + rename/delete modals
+│   └── SearchModal.tsx         spotlight overlay; last 3 convs when empty; keyboard nav ↑↓ Enter Escape
+│
+├── chat/
+│   ├── ChatArea.tsx            orchestrator: delegates to WelcomeScreen or ConversationHeader + MessageList + ChatInput
+│   ├── ConversationHeader.tsx  fixed header showing conversation title with dropdown menu (same actions as ConversationItem)
+│   ├── ChatInput.tsx           textarea + model picker ("Bombé 4.6") + send button; exports ChatInputProps
+│   └── WelcomeScreen.tsx       empty state with animated icon + greeting
+│
+├── messages/
+│   ├── MessageList.tsx         scrollable list, owns messagesEndRef, auto-scrolls
+│   ├── MessageBubble.tsx       single message row; RecipeMarkdown for assistant, plain div for user
+│   ├── RecipeMarkdown.tsx      react-markdown with InteractiveOl: clickable steps (circle→checkmark, strikethrough)
+│   ├── EditMessageUI.tsx       inline edit: Annuler/Enregistrer, Enter saves, Escape cancels
+│   ├── UserMessageActions.tsx  hover-reveal: timestamp, retry, pencil, copy
+│   ├── AssistantMessageActions.tsx  copy, thumbs up/down, retry; owns modal state
+│   ├── FeedbackModal.tsx       withDropdown prop for negative feedback category
+│   └── CopyButton.tsx          clipboard + checkmark feedback
+│
+└── pages/
+    ├── DiscussionsPage.tsx     full-page list with relative timestamps + search
+    ├── PersonnalisePage.tsx    UFO icon (150px) + 2 cards
+    └── ProjectsPage.tsx        search + sort dropdown (Activité récente / Dernière modification / Créé.e.s récemment) + empty state
+```
 
-- `ChatInput.tsx` — exports `ChatInputProps` interface; textarea + model picker ("Bombé 4.6") + send button
-- `EditMessageUI.tsx` — inline edit with Annuler/Enregistrer, Enter saves, Escape cancels
+### Sidebar behaviour
 
-**Message actions**
+**Desktop:** static in flow, `transition-[width]`, inline style `3rem` (collapsed) ↔ `18rem` (expanded). Labels fade via `w-0 opacity-0`.
 
-- `UserMessageActions.tsx` — hover-reveal: timestamp, retry, pencil, copy
-- `AssistantMessageActions.tsx` — copy, thumbs up/down, retry; owns modal state
-- `FeedbackModal.tsx` — `withDropdown` prop for negative feedback category selector
-- `CopyButton.tsx` — clipboard + checkmark feedback
+**Mobile (< 768px):** `position: fixed`, slides with `translateX`. Collapsed = off-screen (`-translate-x-full`). A portal button (top-left, fixed) reopens it. A portal backdrop closes it on click. Clicking any nav item or conversation collapses the sidebar.
 
-**Search & navigation**
+**`ConversationHeader`:** shown at the top of the chat area when a conversation is active. Left-aligned. On mobile adds `pl-12` to avoid the floating open button. Contains the same dropdown menu as `ConversationItem`.
 
-- `SearchModal.tsx` — spotlight overlay; last 3 convs when empty, filters title+content; keyboard nav ↑↓ Enter Escape; resets highlight on input change (not in useEffect)
-- `DiscussionsPage.tsx` — full-page list with relative timestamps
-- `PersonnalisePage.tsx` — UFO icon (150px) + 2 cards; "Personnaliser Glaude"
+### Favorites
 
-**Markdown**
-
-- `RecipeMarkdown.tsx` — renders assistant markdown; overrides `<ol>` with `InteractiveOl`: clickable numbered steps (circle → checkmark, strikethrough on done); uses `ExtraProps` from react-markdown for typing
-- Uses `react-markdown` with custom `components` prop
-
-**Icons**
-
-- `GlaudeIcon.tsx` — static: 11 thin ellipses (anus-like, `cy+ry=10.7` keeps inner tips fixed) + circle
-- `AnimatedGlaudeIcon.tsx` — pulsating: `fast` prop (0.6s thinking / 2.4s idle)
-- `ui.tsx` — `Icon` (SVG wrapper, default size 16), `IconBtn`
+`Conversation.favorite?: boolean` — toggled by `toggleFavorite(id)`. Sidebar shows a "Favoris" section above "Récents" when any conversation is favorited. Both sidebar and `ConversationHeader` menu show "Retirer des favoris" when already favorited.
 
 ### OG image (`app/opengraph-image.tsx`)
 

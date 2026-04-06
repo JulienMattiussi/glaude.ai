@@ -12,7 +12,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     } catch {
       // unavailable
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
   useEffect(() => {

@@ -108,15 +108,18 @@ export default function ChatArea({
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
-      {conversationTitle && onRenameConversation && onDeleteConversation && onToggleFavoriteConversation && (
-        <ConversationHeader
-          title={conversationTitle}
-          favorite={conversationFavorite}
-          onRename={onRenameConversation}
-          onDelete={onDeleteConversation}
-          onToggleFavorite={onToggleFavoriteConversation}
-        />
-      )}
+      {conversationTitle &&
+        onRenameConversation &&
+        onDeleteConversation &&
+        onToggleFavoriteConversation && (
+          <ConversationHeader
+            title={conversationTitle}
+            favorite={conversationFavorite}
+            onRename={onRenameConversation}
+            onDelete={onDeleteConversation}
+            onToggleFavorite={onToggleFavoriteConversation}
+          />
+        )}
       <MessageList
         messages={messages}
         isThinking={isThinking}

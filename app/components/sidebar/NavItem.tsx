@@ -33,7 +33,9 @@ export const NavItem = ({
       {label}
     </span>
     {shortcut && !collapsed && (
-      <span className="text-xs text-(--muted) shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">{shortcut}</span>
+      <span className="text-xs text-(--muted) shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+        {shortcut}
+      </span>
     )}
   </button>
 );
