@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import type { Components } from "react-markdown";
+import type { Components, ExtraProps } from "react-markdown";
+
+type LiElement = React.ReactElement<React.LiHTMLAttributes<HTMLLIElement> & ExtraProps>;
 
 const InteractiveOl = ({ children }: { children: React.ReactNode }) => {
   const [checked, setChecked] = useState<Record<number, boolean>>({});
@@ -10,9 +12,10 @@ const InteractiveOl = ({ children }: { children: React.ReactNode }) => {
 
   const styledChildren = Array.isArray(children)
     ? children.map((child) => {
-        if (!child || typeof child !== "object" || (child as React.ReactElement).type !== "li") {
+        if (!child || typeof child !== "object" || (child as LiElement).type !== "li") {
           return child;
         }
+        const liChild = child as LiElement;
         const i = index++;
         const done = !!checked[i];
         return (
@@ -37,7 +40,7 @@ const InteractiveOl = ({ children }: { children: React.ReactNode }) => {
               )}
             </span>
             <span className={`text-sm leading-relaxed pt-0.5 transition-all duration-200 ${done ? "line-through text-(--muted)" : "text-(--foreground)"}`}>
-              {(child as React.ReactElement).props.children}
+              {liChild.props.children}
             </span>
           </li>
         );
