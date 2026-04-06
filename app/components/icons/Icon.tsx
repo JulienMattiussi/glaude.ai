@@ -14,12 +14,3 @@ export const Icon = ({ size = 16, children }: { size?: number; children: ReactNo
     {children}
   </svg>
 );
-
-export const IconBtn = ({ title, children }: { title: string; children: ReactNode }) => (
-  <button
-    className="p-1.5 rounded-md text-(--muted) hover:text-(--foreground) hover:bg-(--hover-bg) transition-colors"
-    title={title}
-  >
-    {children}
-  </button>
-);

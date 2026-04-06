@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import { generateProutContent } from "../lib/prout";
-import { findRecipe } from "../lib/recipes";
+import { findRecipe } from "../lib/responses";
 import type { Conversation, Message } from "../types";
 
 export function useConversations() {

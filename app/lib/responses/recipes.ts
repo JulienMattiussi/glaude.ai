@@ -1,10 +1,6 @@
-interface Recipe {
-  keywords: string[];
-  imageUrl: string;
-  content: string;
-}
+import type { Entry } from "./types";
 
-const RECIPES: Recipe[] = [
+export const RECIPES: Entry[] = [
   {
     keywords: ["choucroute", "choucroûte", "choucroute garnie", "choucrout", "choucroûte garnie"],
     imageUrl:
@@ -200,14 +196,3 @@ Servir dans un grand plat creux avec le bouillon. En Auvergne, on mange d'abord 
 Cette soupe, mijotée avec amour dans les bois du Morvan, a la particularité d'attirer les visiteurs inattendus. Si un individu de petite taille, à la peau grise et aux grands yeux, sonne à votre porte après la cuisson — n'ayez crainte. Proposez-lui un bol. Il repassera. 🛸`,
   },
 ];
-
-export function findRecipe(prompt: string): string | null {
-  const lower = prompt.toLowerCase();
-  for (const recipe of RECIPES) {
-    if (recipe.keywords.some((kw) => lower.includes(kw.toLowerCase()))) {
-      const [title, ...rest] = recipe.content.split("\n");
-      return `${title}\n\n![illustration du plat](${recipe.imageUrl})\n\n${rest.join("\n")}`;
-    }
-  }
-  return null;
-}
