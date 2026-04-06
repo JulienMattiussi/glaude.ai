@@ -28,3 +28,4 @@ body {
 .prose strong { font-weight: 600; }
 .prose em { font-style: italic; }
 .prose hr { border-color: var(--border); margin: 0.75em 0; }
+.prose img { border-radius: 0.75rem; max-width: 100%; max-height: 280px; object-fit: cover; margin: 0.5em 0; }
