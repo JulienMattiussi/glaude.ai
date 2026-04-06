@@ -66,3 +66,52 @@ body {
   object-fit: cover;
   margin: 0.5em 0;
 }
+
+/* Lightning effect */
+@keyframes lightning-bolt-anim {
+  0% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0.15;
+  }
+  16% {
+    opacity: 0.95;
+  }
+  26% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes lightning-screen-flash-anim {
+  0% {
+    opacity: 0;
+  }
+  4% {
+    opacity: 0.18;
+  }
+  8% {
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.1;
+  }
+  22% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.lightning-bolt {
+  animation: lightning-bolt-anim 1.1s ease-out forwards;
+}
+.lightning-screen-flash {
+  background: white;
+  animation: lightning-screen-flash-anim 1.1s ease-out forwards;
+}

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { WelcomeScreen } from "./WelcomeScreen";
 import { MessageList } from "../messages/MessageList";
 import { ChatInput } from "./ChatInput";
 import { ConversationHeader } from "./ConversationHeader";
+import { LightningEffect } from "../effects/LightningEffect";
 import { useTypewriter } from "../../hooks/useTypewriter";
 import { randomDelay } from "../../lib/delay";
 import type { Message } from "../../types";
@@ -40,10 +41,45 @@ export default function ChatArea({
 }: ChatAreaProps) {
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
+  const [lightning, setLightning] = useState(false);
+  const lastLightningCountRef = useRef(0);
+  const lightningTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const count = messages
+      .filter((m) => m.role === "assistant" && /^(prou+t\s*)+$/i.test(m.content.trim()))
+      .reduce((sum, m) => sum + m.content.trim().split(/\s+/).length, 0);
+    const crossed = Math.floor(count / 20) * 20;
+    if (crossed > 0 && crossed !== lastLightningCountRef.current) {
+      lastLightningCountRef.current = crossed;
+      if (lightningTimerRef.current) clearTimeout(lightningTimerRef.current);
+      setLightning(true);
+      lightningTimerRef.current = setTimeout(() => setLightning(false), 1400);
+    }
+  }, [messages]);
+
+  useEffect(
+    () => () => {
+      if (lightningTimerRef.current) clearTimeout(lightningTimerRef.current);
+    },
+    []
+  );
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { streamingId, streamedText } = useTypewriter(messages);
+
+  const focusInput = () => textareaRef.current?.focus();
+
+  // Refocus textarea whenever thinking ends (covers submit, send, retry, edit save)
+  useEffect(() => {
+    if (!isThinking) focusInput();
+  }, [isThinking]);
+
+  // Refocus when switching conversations
+  useEffect(() => {
+    focusInput();
+  }, [conversationId]);
 
   const triggerReply = (convId: string) => {
     setIsThinking(true);
@@ -108,11 +144,17 @@ export default function ChatArea({
   };
 
   if (messages.length === 0 && !isThinking) {
-    return <WelcomeScreen userName={userName} inputProps={inputProps} />;
+    return (
+      <>
+        <LightningEffect active={lightning} />
+        <WelcomeScreen userName={userName} inputProps={inputProps} />
+      </>
+    );
   }
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
+      <LightningEffect active={lightning} />
       {conversationTitle &&
         onRenameConversation &&
         onDeleteConversation &&
@@ -139,7 +181,10 @@ export default function ChatArea({
           setEditingText(msg.content);
         }}
         onEditSave={handleEditSave}
-        onEditCancel={() => setEditingId(null)}
+        onEditCancel={() => {
+          setEditingId(null);
+          focusInput();
+        }}
         onEditChange={setEditingText}
       />
       <div className="px-4 pb-4">

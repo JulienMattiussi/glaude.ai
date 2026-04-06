@@ -6,7 +6,7 @@ const ALL_ENTRIES = [...RECIPES, ...CHARACTERS, ...PRODUCTS];
 
 const CHOUX_MENU = `# 🥬 Recettes à base de choux
 
-Je connais cinq recettes à base de choux. Cliquez sur celle qui vous fait envie :
+Je peux vous proposer plusieurs recettes à base de choux. Cliquez sur celle qui vous fait envie :
 
 - [Choucroute garnie alsacienne](recipe:choucroute%20garnie)
 - [Chou farci à la grand-mère](recipe:chou%20farci)
