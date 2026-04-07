@@ -10,6 +10,7 @@ import DiscussionsPage from "./components/pages/DiscussionsPage";
 import PersonnalisePage from "./components/pages/PersonnalisePage";
 import ProjectsPage from "./components/pages/ProjectsPage";
 import { PROJECT_ID } from "./components/pages/ProjectDetailPage";
+import GodePage from "./components/pages/GodePage";
 import SearchModal from "./components/sidebar/SearchModal";
 
 const PROJECTS = [{ id: PROJECT_ID, title: "Contacter la danrée" }];
@@ -47,7 +48,10 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-dvh w-full overflow-hidden bg-(--background)">
+    <div
+      className="flex h-dvh w-full overflow-hidden bg-(--background)"
+      data-theme={view === "gode" ? "gode" : undefined}
+    >
       <Sidebar
         conversations={store.conversations}
         activeConversationId={store.activeId}
@@ -105,6 +109,7 @@ export default function Home() {
           />
         )}
         {view === "personnaliser" && <PersonnalisePage />}
+        {view === "gode" && <GodePage />}
         {view === "chat" && (
           <ChatArea
             conversationId={store.activeId}

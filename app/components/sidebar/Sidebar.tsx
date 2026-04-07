@@ -191,7 +191,9 @@ export default function Sidebar({
               <polyline points="8 6 2 12 8 18" />
             </Icon>
           }
-          label="Code"
+          label="Gode"
+          onClick={closeOnMobile(() => onNavigate("gode"))}
+          active={activeView === "gode"}
         />
       </nav>
 
@@ -291,13 +293,15 @@ export default function Sidebar({
       {isMobile &&
         collapsed &&
         createPortal(
-          <button
-            onClick={() => setCollapsed(false)}
-            className="fixed top-3 left-3 z-30 p-1.5 rounded-md bg-(--sidebar-bg) hover:bg-(--hover-bg) text-(--muted) transition-colors"
-            title="Ouvrir le menu"
-          >
-            {sidebarIcon}
-          </button>,
+          <div data-theme={activeView === "gode" ? "gode" : undefined}>
+            <button
+              onClick={() => setCollapsed(false)}
+              className="fixed top-3 left-3 z-30 p-1.5 rounded-md bg-(--sidebar-bg) hover:bg-(--hover-bg) text-(--muted) transition-colors"
+              title="Ouvrir le menu"
+            >
+              {sidebarIcon}
+            </button>
+          </div>,
           document.body
         )}
       {content}

@@ -20,6 +20,21 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+/* ── Thème Gode — téléphone rose ─────────────────────── */
+[data-theme="gode"] {
+  --background: #1a0010;
+  --sidebar-bg: #230016;
+  --foreground: #ffe0f0;
+  --muted: #d47fa0;
+  --border: #6b1040;
+  --input-bg: #2d001c;
+  --hover-bg: #3d0028;
+  --accent: #ff2d78;
+  --focus-ring: #ff2d78;
+  --danger: #ff6096;
+  --danger-hover: #ff2d78;
+}
+
 /* Markdown rendering in assistant messages */
 .prose h1 {
   font-size: 1.2em;
