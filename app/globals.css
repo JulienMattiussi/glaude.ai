@@ -9,6 +9,9 @@
   --input-bg: #ffffff;
   --hover-bg: #e5e4dd;
   --accent: #d97757;
+  --focus-ring: #60a5fa;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
 }
 
 body {

@@ -49,7 +49,7 @@ export const FeedbackModal = ({
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full appearance-none rounded-lg border border-(--border) bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) focus:outline-none focus:border-blue-400 pr-8"
+                className="w-full appearance-none rounded-lg border border-(--border) bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) focus:outline-none focus:border-(--focus-ring) pr-8"
               >
                 <option value="">Sélectionner...</option>
                 {FEEDBACK_OPTIONS.map((opt) => (
@@ -77,7 +77,7 @@ export const FeedbackModal = ({
             onChange={(e) => setDetails(e.target.value)}
             placeholder={placeholder}
             rows={3}
-            className="w-full resize-none rounded-lg border border-(--border) bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) placeholder:text-(--muted) focus:outline-none focus:border-blue-400"
+            className="w-full resize-none rounded-lg border border-(--border) bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) placeholder:text-(--muted) focus:outline-none focus:border-(--focus-ring)"
           />
         </div>
 

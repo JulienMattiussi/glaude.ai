@@ -24,7 +24,7 @@ export const EditMessageUI = ({
         if (e.key === "Escape") onCancel();
       }}
       rows={3}
-      className="w-full resize-none rounded-xl border-2 border-blue-400 bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) focus:outline-none"
+      className="w-full resize-none rounded-xl border-2 border-(--focus-ring) bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) focus:outline-none"
     />
     <div className="flex justify-end gap-2">
       <button

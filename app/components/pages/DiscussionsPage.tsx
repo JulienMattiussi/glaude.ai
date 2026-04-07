@@ -55,7 +55,7 @@ export default function DiscussionsPage({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher dans vos conversations..."
-            className="w-full rounded-xl border-2 border-(--border) focus:border-blue-400 bg-(--input-bg) pl-10 pr-4 py-2.5 text-sm text-(--foreground) placeholder:text-(--muted) focus:outline-none transition-colors"
+            className="w-full rounded-xl border-2 border-(--border) focus:border-(--focus-ring) bg-(--input-bg) pl-10 pr-4 py-2.5 text-sm text-(--foreground) placeholder:text-(--muted) focus:outline-none transition-colors"
           />
         </div>
 

@@ -145,7 +145,7 @@ export const ConversationItem = ({
                 setMenuOpen(false);
                 setConfirmDelete(true);
               }}
-              className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-red-500 hover:bg-(--hover-bg) transition-colors"
+              className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-(--danger) hover:bg-(--hover-bg) transition-colors"
             >
               <span>
                 <Icon size={14}>
@@ -186,7 +186,7 @@ export const ConversationItem = ({
                   }
                   if (e.key === "Escape") setRenaming(false);
                 }}
-                className="w-full rounded-lg border-2 border-blue-400 bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) focus:outline-none"
+                className="w-full rounded-lg border-2 border-(--focus-ring) bg-(--input-bg) px-3 py-2 text-sm text-(--foreground) focus:outline-none"
               />
               <div className="flex justify-end gap-2">
                 <button
@@ -240,7 +240,7 @@ export const ConversationItem = ({
                     setConfirmDelete(false);
                     onDelete();
                   }}
-                  className="px-4 py-2 rounded-lg text-sm text-white bg-red-500 hover:bg-red-600 transition-colors"
+                  className="px-4 py-2 rounded-lg text-sm text-white bg-(--danger) hover:bg-(--danger-hover) transition-colors"
                 >
                   Supprimer
                 </button>

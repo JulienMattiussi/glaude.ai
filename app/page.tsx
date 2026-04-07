@@ -8,6 +8,7 @@ import ChatArea from "./components/chat/ChatArea";
 import DiscussionsPage from "./components/pages/DiscussionsPage";
 import PersonnalisePage from "./components/pages/PersonnalisePage";
 import ProjectsPage from "./components/pages/ProjectsPage";
+import { PROJECT_ID } from "./components/pages/ProjectDetailPage";
 import SearchModal from "./components/sidebar/SearchModal";
 
 export default function Home() {
@@ -80,9 +81,9 @@ export default function Home() {
           <ProjectsPage
             projectFavorite={projectFavorite}
             onToggleProjectFavorite={() => setProjectFavorite((f) => !f)}
-            conversations={store.conversations.filter((c) => c.projectId === "danree")}
+            conversations={store.conversations.filter((c) => c.projectId === PROJECT_ID)}
             onStartConversation={(text) => {
-              const convId = store.addUserMessage(text, "danree");
+              const convId = store.addUserMessage(text, PROJECT_ID);
               selectAndNavigate(convId);
             }}
             onSelectConversation={selectAndNavigate}
@@ -115,10 +116,10 @@ export default function Home() {
             }
             userName="ma danrée"
             conversationProjectName={
-              store.activeConversation?.projectId === "danree" ? "Contacter la danrée" : undefined
+              store.activeConversation?.projectId === PROJECT_ID ? "Contacter la danrée" : undefined
             }
             onNavigateToProject={
-              store.activeConversation?.projectId === "danree"
+              store.activeConversation?.projectId === PROJECT_ID
                 ? () => setView("projet-detail")
                 : undefined
             }

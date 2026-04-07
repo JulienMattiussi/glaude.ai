@@ -6,13 +6,13 @@ import GlaudeIcon from "../icons/GlaudeIcon";
 import { Icon } from "../icons/Icon";
 import { NavItem } from "./NavItem";
 import { ConversationItem } from "./ConversationItem";
-import type { View } from "../../types";
+import type { Conversation, View } from "../../types";
 
 const Divider = () => <div className="h-px bg-(--border) mx-3 my-2" />;
 
 interface SidebarProps {
   onNewConversation: () => void;
-  conversations: { id: string; title: string; favorite?: boolean }[];
+  conversations: Conversation[];
   activeConversationId: string | null;
   onSelectConversation: (id: string) => void;
   onDeleteConversation: (id: string) => void;
