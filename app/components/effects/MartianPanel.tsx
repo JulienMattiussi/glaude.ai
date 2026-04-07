@@ -9,13 +9,10 @@ export const MartianSvg = () => (
     xmlns="http://www.w3.org/2000/svg"
     style={{ width: "100%", height: "100%", display: "block" }}
   >
-    {/* ── Antennae ─────────────────────────────── */}
-    <line x1="50" y1="22" x2="36" y2="2" stroke="#fbbf24" strokeWidth="3" strokeLinecap="round" />
-    <circle cx="34" cy="-1" r="7" fill="#ef4444" stroke="#b91c1c" strokeWidth="2" />
-    <circle cx="36" cy="-2" r="3" fill="#fca5a5" />
-    <line x1="70" y1="22" x2="84" y2="2" stroke="#fbbf24" strokeWidth="3" strokeLinecap="round" />
-    <circle cx="86" cy="-1" r="7" fill="#ef4444" stroke="#b91c1c" strokeWidth="2" />
-    <circle cx="84" cy="-2" r="3" fill="#fca5a5" />
+    {/* ── Top head ball ────────────────────────── */}
+    <circle cx="60" cy="17" r="15" fill="#ef4444" stroke="#b91c1c" strokeWidth="2" />
+    <circle cx="60" cy="17" r="7" fill="#dc2626" />
+    <circle cx="55" cy="12" r="3" fill="#fca5a5" opacity="0.7" />
 
     {/* ── Ear pads (red, behind head) ──────────── */}
     <circle cx="19" cy="63" r="15" fill="#ef4444" stroke="#b91c1c" strokeWidth="2" />
