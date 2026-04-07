@@ -5,6 +5,8 @@ import { useMemo, useState, useEffect } from "react";
 interface Props {
   active: boolean;
   onDismiss: () => void;
+  side?: "left" | "right";
+  departing?: boolean;
 }
 
 const UfoSvg = () => (
@@ -99,9 +101,10 @@ const UfoSvg = () => (
   </svg>
 );
 
-export function UfoEffect({ active, onDismiss }: Props) {
+export function UfoEffect({ active, onDismiss, side: sideProp, departing }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const side = useMemo(() => (Math.random() < 0.5 ? "left" : "right"), [active]);
+  const randomSide = useMemo(() => (Math.random() < 0.5 ? "left" : "right"), [active]);
+  const side = sideProp ?? randomSide;
   const [landed, setLanded] = useState(false);
 
   useEffect(() => {
@@ -109,17 +112,21 @@ export function UfoEffect({ active, onDismiss }: Props) {
       setLanded(false);
       return;
     }
+    if (departing) return; // departure auto-dismissed by parent
     const t = setTimeout(() => setLanded(true), 5000);
     return () => clearTimeout(t);
-  }, [active]);
+  }, [active, departing]);
 
   if (!active) return null;
 
   const animationName = side === "left" ? "ufo-fly-left" : "ufo-fly-right";
+  const animation = departing
+    ? `${animationName} 5s linear reverse forwards`
+    : `${animationName} 5s linear forwards`;
 
   return (
     <div
-      key={String(active)}
+      key={String(active) + String(departing)}
       className="fixed inset-x-0 z-40"
       style={{
         bottom: "96px",
@@ -130,11 +137,11 @@ export function UfoEffect({ active, onDismiss }: Props) {
       }}
     >
       <div
-        onClick={landed ? onDismiss : undefined}
+        onClick={landed && !departing ? onDismiss : undefined}
         style={{
-          animation: `${animationName} 5s linear forwards`,
-          pointerEvents: landed ? "auto" : "none",
-          cursor: landed ? "pointer" : "default",
+          animation,
+          pointerEvents: landed && !departing ? "auto" : "none",
+          cursor: landed && !departing ? "pointer" : "default",
         }}
       >
         <UfoSvg />

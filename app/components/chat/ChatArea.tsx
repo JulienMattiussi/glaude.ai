@@ -60,6 +60,9 @@ export default function ChatArea({
   const lightningTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [ufo, setUfo] = useState(false);
   const [showMartian, setShowMartian] = useState(false);
+  const [departing, setDeparting] = useState(false);
+  const ufoSideRef = useRef<"left" | "right">("left");
+  const departureTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastUfoCountRef = useRef(0);
   const replyAlreadyTriggeredRef = useRef(false);
 
@@ -81,6 +84,7 @@ export default function ChatArea({
     const ufoThreshold = count < 50 ? 0 : Math.floor(count / 50) * 50;
     if (ufoThreshold > 0 && ufoThreshold !== lastUfoCountRef.current) {
       lastUfoCountRef.current = ufoThreshold;
+      ufoSideRef.current = Math.random() < 0.5 ? "left" : "right";
       setUfo(true);
     }
   }, [messages]);
@@ -88,14 +92,26 @@ export default function ChatArea({
   useEffect(
     () => () => {
       if (lightningTimerRef.current) clearTimeout(lightningTimerRef.current);
+      if (departureTimerRef.current) clearTimeout(departureTimerRef.current);
     },
     []
   );
+
+  const handleMartianDismiss = () => {
+    setShowMartian(false);
+    setDeparting(true);
+    setUfo(true);
+    departureTimerRef.current = setTimeout(() => {
+      setUfo(false);
+      setDeparting(false);
+    }, 5200);
+  };
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "u" && (e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey) {
         e.preventDefault();
+        ufoSideRef.current = Math.random() < 0.5 ? "left" : "right";
         setUfo(true);
       }
     };
@@ -195,13 +211,19 @@ export default function ChatArea({
     textareaRef,
     disabled: isThinking,
     showMartian,
+    onDismissMartian: handleMartianDismiss,
   };
 
   if (messages.length === 0 && !isThinking) {
     return (
       <>
         <LightningEffect active={lightning} boltCount={boltCount} />
-        <UfoEffect active={ufo} onDismiss={() => setUfo(false)} />
+        <UfoEffect
+          active={ufo}
+          onDismiss={() => setUfo(false)}
+          side={ufoSideRef.current}
+          departing={departing}
+        />
         <WelcomeScreen userName={userName} inputProps={inputProps} />
       </>
     );
@@ -216,6 +238,8 @@ export default function ChatArea({
           setUfo(false);
           setShowMartian(true);
         }}
+        side={ufoSideRef.current}
+        departing={departing}
       />
       {conversationTitle &&
         onRenameConversation &&

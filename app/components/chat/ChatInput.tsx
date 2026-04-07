@@ -28,6 +28,7 @@ export interface ChatInputProps {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   disabled?: boolean;
   showMartian?: boolean;
+  onDismissMartian?: () => void;
 }
 
 export const ChatInput = ({
@@ -39,6 +40,7 @@ export const ChatInput = ({
   textareaRef,
   disabled,
   showMartian,
+  onDismissMartian,
 }: ChatInputProps) => {
   // Prefix = value at the moment recording started; speech replaces everything after it
   const prefixRef = useRef("");
@@ -79,11 +81,13 @@ export const ChatInput = ({
       {showMartian && (
         <div
           className="shrink-0"
+          onClick={onDismissMartian}
           style={{
             alignSelf: "stretch",
             aspectRatio: "120 / 320",
             maxHeight: "150px",
             animation: "martian-enter 0.5s ease-out forwards",
+            cursor: "pointer",
           }}
         >
           <MartianSvg />
