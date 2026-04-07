@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Glaude
 
-## Getting Started
+![Glaude](public/og.png)
 
-First, run the development server:
+> Le nouvel agent IA. Connecté à l'univers.
+
+**Glaude** répond à toutes vos questions. Rapidement. Gratuitement.
+
+Construit avec Next.js 16 (App Router), React 19, TypeScript et Tailwind CSS v4.
+
+---
+
+## Lancer le projet
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+make install   # installe les dépendances
+make start     # démarre le serveur de dev sur http://localhost:4321
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Autres commandes :
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+make build        # build de production
+make lint         # ESLint
+make typecheck    # vérification TypeScript
+make format       # Prettier (à lancer après chaque modification)
+make format-check # vérifie le formatage sans modifier
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Fonctionnalités
 
-To learn more about Next.js, take a look at the following resources:
+- Répond à toutes vos questions
+- Connaissance approfondie de la cuisine au chou
+- Dictée vocale (`fr-FR`)
+- Mode GLAUDE GODE
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Stack technique
 
-## Deploy on Vercel
+| Outil        | Version         |
+| ------------ | --------------- |
+| Next.js      | 16 (App Router) |
+| React        | 19              |
+| TypeScript   | 5               |
+| Tailwind CSS | v4              |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Port de développement : **4321**
+- Données persistées en localStorage
+- Pas de backend
