@@ -73,7 +73,7 @@ export default function ProjectDetailPage({
   };
 
   return (
-    <div className="flex-1 overflow-y-auto px-8 py-8">
+    <div className="flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-8">
       <div className="max-w-5xl mx-auto">
         {/* Back */}
         <button
@@ -87,7 +87,7 @@ export default function ProjectDetailPage({
           Tous les projets
         </button>
 
-        <div className="flex gap-6 items-start">
+        <div className="flex flex-col gap-6 md:flex-row md:items-start">
           {/* Left column */}
           <div className="flex-1 min-w-0">
             {/* Title row */}
@@ -141,26 +141,26 @@ export default function ProjectDetailPage({
             </div>
 
             {/* Conversations tabs */}
-            <div className="flex items-center gap-4 mb-4">
+            <div className="mb-1">
               <button className="px-3 py-1.5 rounded-full text-sm bg-(--hover-bg) text-(--foreground) font-medium">
                 Vos conversations
               </button>
-              <p className="text-xs text-(--muted) flex items-center gap-1">
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="inline shrink-0"
-                >
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-                Vos conversations restent privées jusqu&apos;à ce qu&apos;elles soient partagées.
-              </p>
             </div>
+            <p className="text-xs text-(--muted) flex items-center gap-1 mb-4">
+              <svg
+                width="11"
+                height="11"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="inline shrink-0"
+              >
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              Vos conversations restent privées jusqu&apos;à ce qu&apos;elles soient partagées.
+            </p>
 
             {/* Conversation list */}
             {conversations.length === 0 ? (
@@ -190,7 +190,7 @@ export default function ProjectDetailPage({
           </div>
 
           {/* Right column */}
-          <div className="w-72 shrink-0 flex flex-col gap-3">
+          <div className="w-full md:w-72 md:shrink-0 flex flex-col gap-3">
             {/* Instructions */}
             <div className="rounded-2xl border border-(--border) bg-(--input-bg) p-4">
               <div className="flex items-center justify-between mb-2">
