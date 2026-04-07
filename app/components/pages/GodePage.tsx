@@ -87,7 +87,7 @@ export default function GodePage() {
                 backgroundClip: "text",
               }}
             >
-              GODE
+              GLAUDE GODE
             </h1>
             <span className="text-(--accent)">
               <PhoneIcon />
@@ -97,7 +97,7 @@ export default function GodePage() {
             L&apos;assistant qui s&apos;occupe de votre code… avec douceur.
           </p>
           <p className="text-xs text-(--muted) mt-1 opacity-60">
-            3615 GODE · 1,50 € / min · Ouvert 24h/24
+            3615 GLAUDEGODE · 1,50 token / min · Ouvert 24h/24
           </p>
         </div>
       </div>
@@ -135,7 +135,7 @@ export default function GodePage() {
               >
                 {m.role === "assistant" && (
                   <span className="block text-xs text-(--accent) mb-1 font-semibold tracking-wide">
-                    ✦ Gode ✦
+                    ✦ Glaude Gode ✦
                   </span>
                 )}
                 {m.text}
@@ -162,7 +162,7 @@ export default function GodePage() {
               />
             </div>
             <div className="flex items-center justify-between px-3 pb-3">
-              <span className="text-xs text-(--muted) italic">3615 GODE</span>
+              <span className="text-xs text-(--muted) italic">3615 GLAUDEGODE</span>
               <button
                 onClick={handleSubmit}
                 disabled={!input.trim()}

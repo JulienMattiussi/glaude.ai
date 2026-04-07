@@ -47,7 +47,7 @@ A parody clone of claude.ai — **"Le Glaude"** — built with Next.js 16 (App R
 
 - `Message` — `{ id, role: "user"|"assistant", content }`
 - `Conversation` — `{ id, title, messages, favorite?: boolean }`
-- `View` — `"chat" | "discussions" | "projets" | "personnaliser"`
+- `View` — `"chat" | "discussions" | "projets" | "projet-detail" | "personnaliser" | "gode"`
 
 Imported everywhere, never redefined locally.
 
@@ -60,6 +60,7 @@ Owns `view: View`, `searchOpen: boolean`. Uses `useConversations` as `store`.
 - Global keyboard shortcuts (registered with `{ capture: true }` to intercept browser shortcuts):
   - `Ctrl+K` / `Cmd+K` → open search modal
   - `Ctrl+Shift+O` / `Cmd+Shift+O` → new conversation (uses `e.key.toLowerCase()` to handle shift case)
+- Root div gets `data-theme="gode"` when `view === "gode"` — this overrides all CSS variables site-wide
 
 ### Component structure (`app/components/`)
 
@@ -86,7 +87,9 @@ components/
 │                               viewBox="0 0 120 320"; exported as MartianSvg (used in ChatInput)
 │
 ├── sidebar/
-│   ├── Sidebar.tsx             desktop: width 3rem↔18rem animated; mobile: fixed overlay with backdrop + portal open button
+│   ├── Sidebar.tsx             desktop: width 3rem↔18rem animated; mobile: fixed overlay with backdrop + portal open button;
+│   │                           portal elements are wrapped in <div data-theme={activeView==="gode"?"gode":undefined}>
+│   │                           so they inherit the active theme (portals render into document.body, outside the themed root div)
 │   ├── NavItem.tsx             button with icon + label + optional shortcut hint (hover-only)
 │   ├── ConversationItem.tsx    item with portal dropdown menu (favorites, rename, project, delete) + rename/delete modals
 │   └── SearchModal.tsx         spotlight overlay; last 3 convs when empty; keyboard nav ↑↓ Enter Escape
@@ -123,7 +126,12 @@ components/
 └── pages/
     ├── DiscussionsPage.tsx     full-page list with relative timestamps + search
     ├── PersonnalisePage.tsx    UFO icon (150px) + 2 cards
-    └── ProjectsPage.tsx        search + sort dropdown (Activité récente / Dernière modification / Créé.e.s récemment) + empty state
+    ├── ProjectsPage.tsx        search + sort dropdown (Activité récente / Dernière modification / Créé.e.s récemment) + empty state
+    ├── ProjectDetailPage.tsx   two-column layout: left=title/desc/chat input/conversations, right=instructions/fichiers;
+    │                           responsive: flex-col on mobile (md:flex-row on desktop); px-4 mobile / px-8 desktop
+    ├── ProjectConvRow.tsx      single conversation row in project detail
+    └── GodePage.tsx            "téléphone rose" coding assistant parody (3615 GODE); own chat with suggestive responses;
+                                active via view="gode" which sets data-theme="gode" on root div → full site re-themes
 ```
 
 ### Sidebar behaviour
@@ -187,6 +195,22 @@ Uses browser Web Speech API (`SpeechRecognition` / `webkitSpeechRecognition`). N
 
 UFO keyframes use analytically computed points (cos/sin at every 45° = 8 points per circle) for two chained circles, with `animation-timing-function: linear` — cubic-bezier distorts the circular path.
 
+## CSS theming
+
+`globals.css` defines CSS custom properties on `:root` (default beige/cream palette). Additional themes are defined under `[data-theme="gode"]` and override the same variables. Any component inside a `[data-theme]` element automatically inherits the active theme via CSS cascade — no prop drilling needed.
+
+**Portal caveat:** `createPortal` renders into `document.body`, which is outside the themed root div. Any portal that must follow the active theme must wrap its content in `<div data-theme={activeView === "gode" ? "gode" : undefined}>`. See `Sidebar.tsx` portal open-button.
+
+**Gode theme** (`[data-theme="gode"]`): dark bordeaux/black background, rose-fuchsia accent (#ff2d78), light pink foreground — applied site-wide when `view === "gode"`.
+
 ## Viewport height (mobile)
 
-Layout uses `h-dvh` (`100dvh`) instead of `h-screen` (`100vh`) on both `<html>`, `<body>` and the root page div. On iOS Safari, `100vh` equals the maximally expanded viewport (toolbar hidden), causing overflow when the address bar is visible. `100dvh` is dynamic and always matches the actual available height. On desktop, `dvh = vh` — no regression.
+**Correct layout stack:**
+
+- `<html>` — no explicit height (default block, fills viewport width/height naturally)
+- `<body className="flex h-dvh w-full overflow-hidden">` — `h-dvh` fixes iOS Safari toolbar overlap; `overflow-hidden` is on `body` (not a child div) because iOS Safari only respects scroll prevention on `body`/`html`, not on arbitrary divs
+- root page `<div className="flex h-dvh w-full overflow-hidden">` — belt and suspenders
+
+On iOS Safari, `100vh` = large viewport height (address bar hidden). When the address bar is visible, content overflows. `100dvh` = current visible viewport, dynamic. On desktop, `dvh = vh` — no regression.
+
+**Do not put `overflow-hidden` only on a child div** to prevent iOS scroll — it won't work. It must be on `body`.
