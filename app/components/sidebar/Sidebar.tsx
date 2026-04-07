@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { createPortal } from "react-dom";
 import GlaudeIcon from "../icons/GlaudeIcon";
 import { Icon } from "../icons/Icon";
@@ -45,7 +46,7 @@ export default function Sidebar({
   projectFavorite,
   onNavigateToProject,
 }: SidebarProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useLocalStorage("glaude-sidebar-collapsed", false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -181,17 +182,6 @@ export default function Sidebar({
           label="Projets"
           onClick={closeOnMobile(() => onNavigate("projets"))}
           active={activeView === "projets"}
-        />
-        <NavItem
-          collapsed={collapsed}
-          icon={
-            <Icon>
-              <polygon points="12 2 2 7 12 12 22 7 12 2" />
-              <polyline points="2 17 12 22 22 17" />
-              <polyline points="2 12 12 17 22 12" />
-            </Icon>
-          }
-          label="Artéfacts"
         />
         <NavItem
           collapsed={collapsed}

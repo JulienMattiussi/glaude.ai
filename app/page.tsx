@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useConversations } from "./hooks/useConversations";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 import type { View } from "./types";
 import Sidebar from "./components/sidebar/Sidebar";
 import ChatArea from "./components/chat/ChatArea";
@@ -17,7 +18,7 @@ export default function Home() {
   const store = useConversations();
   const [view, setView] = useState<View>("chat");
   const [searchOpen, setSearchOpen] = useState(false);
-  const [projectFavorite, setProjectFavorite] = useState(false);
+  const [projectFavorite, setProjectFavorite] = useLocalStorage("glaude-project-favorite", false);
 
   const selectAndNavigate = (id: string) => {
     store.selectConversation(id);
@@ -92,6 +93,12 @@ export default function Home() {
               selectAndNavigate(convId);
             }}
             onSelectConversation={selectAndNavigate}
+            onDeleteConversation={store.deleteConversation}
+            onRenameConversation={store.renameConversation}
+            onToggleFavoriteConversation={store.toggleFavorite}
+            onRemoveFromProject={store.removeFromProject}
+            onMoveToProject={store.moveToProject}
+            projects={PROJECTS}
             showDetail={view === "projet-detail"}
             onOpenDetail={() => setView("projet-detail")}
             onCloseDetail={() => setView("projets")}

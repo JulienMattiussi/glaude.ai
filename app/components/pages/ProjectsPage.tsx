@@ -65,6 +65,12 @@ interface Props {
   conversations: Conversation[];
   onStartConversation: (text: string) => void;
   onSelectConversation: (id: string) => void;
+  onDeleteConversation: (id: string) => void;
+  onRenameConversation: (id: string, title: string) => void;
+  onToggleFavoriteConversation: (id: string) => void;
+  onRemoveFromProject: (id: string) => void;
+  onMoveToProject: (id: string, projectId: string) => void;
+  projects: { id: string; title: string }[];
   showDetail?: boolean;
   onOpenDetail: () => void;
   onCloseDetail: () => void;
@@ -76,6 +82,12 @@ export default function ProjectsPage({
   conversations,
   onStartConversation,
   onSelectConversation,
+  onDeleteConversation,
+  onRenameConversation,
+  onToggleFavoriteConversation,
+  onRemoveFromProject,
+  onMoveToProject,
+  projects,
   showDetail = false,
   onOpenDetail,
   onCloseDetail,
@@ -105,6 +117,12 @@ export default function ProjectsPage({
         conversations={conversations}
         onStartConversation={onStartConversation}
         onSelectConversation={onSelectConversation}
+        onDeleteConversation={onDeleteConversation}
+        onRenameConversation={onRenameConversation}
+        onToggleFavoriteConversation={onToggleFavoriteConversation}
+        onRemoveFromProject={onRemoveFromProject}
+        onMoveToProject={onMoveToProject}
+        projects={projects}
       />
     );
   }

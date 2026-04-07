@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { Icon } from "../icons/Icon";
 import { ChatInput } from "../chat/ChatInput";
-import { relativeTime } from "../../lib/time";
+import { ProjectConvRow } from "./ProjectConvRow";
 import type { Conversation } from "../../types";
 
 const PROJECT_ID = "danree";
@@ -24,6 +24,12 @@ interface Props {
   conversations: Conversation[];
   onStartConversation: (text: string) => void;
   onSelectConversation: (id: string) => void;
+  onDeleteConversation: (id: string) => void;
+  onRenameConversation: (id: string, title: string) => void;
+  onToggleFavoriteConversation: (id: string) => void;
+  onRemoveFromProject: (id: string) => void;
+  onMoveToProject: (id: string, projectId: string) => void;
+  projects: { id: string; title: string }[];
 }
 
 export default function ProjectDetailPage({
@@ -33,6 +39,12 @@ export default function ProjectDetailPage({
   conversations,
   onStartConversation,
   onSelectConversation,
+  onDeleteConversation,
+  onRenameConversation,
+  onToggleFavoriteConversation,
+  onRemoveFromProject,
+  onMoveToProject,
+  projects,
 }: Props) {
   const [input, setInput] = useState("");
   const [lightbox, setLightbox] = useState<{ src: string; name: string } | null>(null);
@@ -161,16 +173,17 @@ export default function ProjectDetailPage({
             ) : (
               <div className="flex flex-col divide-y divide-(--border) border border-(--border) rounded-2xl overflow-hidden">
                 {conversations.map((conv) => (
-                  <button
+                  <ProjectConvRow
                     key={conv.id}
-                    onClick={() => onSelectConversation(conv.id)}
-                    className="flex flex-col items-start px-5 py-3 hover:bg-(--hover-bg) transition-colors text-left"
-                  >
-                    <span className="text-sm font-medium text-(--foreground)">{conv.title}</span>
-                    <span className="text-xs text-(--muted)">
-                      Dernier message {relativeTime(parseInt(conv.id))}
-                    </span>
-                  </button>
+                    conv={conv}
+                    onSelect={() => onSelectConversation(conv.id)}
+                    onDelete={() => onDeleteConversation(conv.id)}
+                    onRename={(title) => onRenameConversation(conv.id, title)}
+                    onToggleFavorite={() => onToggleFavoriteConversation(conv.id)}
+                    onRemoveFromProject={() => onRemoveFromProject(conv.id)}
+                    onMoveToProject={(projectId) => onMoveToProject(conv.id, projectId)}
+                    projects={projects}
+                  />
                 ))}
               </div>
             )}
