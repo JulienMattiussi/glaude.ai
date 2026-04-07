@@ -57,12 +57,23 @@ function NoNewProjectModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+import type { Conversation } from "../../types";
+
 interface Props {
   projectFavorite: boolean;
   onToggleProjectFavorite: () => void;
+  conversations: Conversation[];
+  onStartConversation: (text: string) => void;
+  onSelectConversation: (id: string) => void;
 }
 
-export default function ProjectsPage({ projectFavorite, onToggleProjectFavorite }: Props) {
+export default function ProjectsPage({
+  projectFavorite,
+  onToggleProjectFavorite,
+  conversations,
+  onStartConversation,
+  onSelectConversation,
+}: Props) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("activite");
   const [sortOpen, setSortOpen] = useState(false);
@@ -86,6 +97,9 @@ export default function ProjectsPage({ projectFavorite, onToggleProjectFavorite 
         onBack={() => setDetailOpen(false)}
         favorite={projectFavorite}
         onToggleFavorite={onToggleProjectFavorite}
+        conversations={conversations}
+        onStartConversation={onStartConversation}
+        onSelectConversation={onSelectConversation}
       />
     );
   }

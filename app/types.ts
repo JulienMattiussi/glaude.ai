@@ -9,6 +9,7 @@ export interface Conversation {
   title: string;
   messages: Message[];
   favorite?: boolean;
+  projectId?: string;
 }
 
 export type View = "chat" | "discussions" | "projets" | "personnaliser";

@@ -10,6 +10,8 @@ interface ConversationHeaderProps {
   onRename: (title: string) => void;
   onDelete: () => void;
   onToggleFavorite: () => void;
+  projectName?: string;
+  onNavigateToProject?: () => void;
 }
 
 export function ConversationHeader({
@@ -18,6 +20,8 @@ export function ConversationHeader({
   onRename,
   onDelete,
   onToggleFavorite,
+  projectName,
+  onNavigateToProject,
 }: ConversationHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
@@ -44,6 +48,17 @@ export function ConversationHeader({
 
   return (
     <div className="flex items-center pl-12 pr-4 md:px-4 py-2 bg-(--background) shrink-0">
+      {projectName && onNavigateToProject && (
+        <>
+          <button
+            onClick={onNavigateToProject}
+            className="px-2 py-1 rounded-md hover:bg-(--hover-bg) transition-colors text-sm text-(--muted) hover:text-(--foreground)"
+          >
+            {projectName}
+          </button>
+          <span className="text-(--muted) text-sm mx-0.5">/</span>
+        </>
+      )}
       <button
         ref={btnRef}
         onClick={openMenu}

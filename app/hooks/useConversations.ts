@@ -21,12 +21,12 @@ export function useConversations() {
 
   const selectConversation = (id: string) => setActiveId(id);
 
-  const addUserMessage = (text: string): string => {
-    let convId = activeId;
+  const addUserMessage = (text: string, projectId?: string): string => {
+    let convId = projectId ? null : activeId;
     if (!convId) {
       convId = Date.now().toString();
       const title = text.length > 30 ? text.slice(0, 30) + "…" : text;
-      setConversations((prev) => [{ id: convId!, title, messages: [] }, ...prev]);
+      setConversations((prev) => [{ id: convId!, title, messages: [], projectId }, ...prev]);
       setActiveId(convId);
     }
 

@@ -1,7 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Icon } from "../icons/Icon";
+import { ChatInput } from "../chat/ChatInput";
+import { relativeTime } from "../../lib/time";
+import type { Conversation } from "../../types";
+
+const PROJECT_ID = "danree";
 
 const PROJECT = {
   title: "Contacter la danrée",
@@ -10,14 +15,50 @@ const PROJECT = {
   instructions: "Faire des pets plus puissants et plus longs",
 };
 
+export { PROJECT_ID };
+
 interface Props {
   onBack: () => void;
   favorite: boolean;
   onToggleFavorite: () => void;
+  conversations: Conversation[];
+  onStartConversation: (text: string) => void;
+  onSelectConversation: (id: string) => void;
 }
 
-export default function ProjectDetailPage({ onBack, favorite, onToggleFavorite }: Props) {
+export default function ProjectDetailPage({
+  onBack,
+  favorite,
+  onToggleFavorite,
+  conversations,
+  onStartConversation,
+  onSelectConversation,
+}: Props) {
+  const [input, setInput] = useState("");
   const [lightbox, setLightbox] = useState<{ src: string; name: string } | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleSubmit = () => {
+    if (!input.trim()) return;
+    const text = input.trim();
+    setInput("");
+    if (textareaRef.current) textareaRef.current.style.height = "auto";
+    onStartConversation(text);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
+  const handleInput = () => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    ta.style.height = Math.min(ta.scrollHeight, 200) + "px";
+  };
 
   return (
     <div className="flex-1 overflow-y-auto px-8 py-8">
@@ -44,7 +85,7 @@ export default function ProjectDetailPage({ onBack, favorite, onToggleFavorite }
                 <button
                   onClick={onToggleFavorite}
                   title={favorite ? "Retirer des favoris" : "Ajouter aux favoris"}
-                  className="p-1.5 rounded-lg hover:bg-(--hover-bg) transition-colors text-(--muted)"
+                  className="p-1.5 rounded-lg hover:bg-(--hover-bg) transition-colors text-(--muted) cursor-pointer"
                 >
                   <Icon size={16}>
                     <polygon
@@ -76,50 +117,22 @@ export default function ProjectDetailPage({ onBack, favorite, onToggleFavorite }
             </p>
 
             {/* Chat input */}
-            <div className="rounded-2xl border border-(--border) bg-(--input-bg) p-4 mb-6">
-              <p className="text-sm text-(--muted) mb-6">Comment puis-je vous aider ?</p>
-              <div className="flex items-center justify-between">
-                <button className="p-1 rounded hover:bg-(--hover-bg) transition-colors text-(--muted)">
-                  <Icon size={16}>
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </Icon>
-                </button>
-                <div className="flex items-center gap-3">
-                  <button className="flex items-center gap-1 text-sm text-(--muted) hover:text-(--foreground) transition-colors">
-                    Bombé 4.6
-                    <Icon size={13}>
-                      <polyline points="6 9 12 15 18 9" />
-                    </Icon>
-                  </button>
-                  <button className="p-1 rounded hover:bg-(--hover-bg) transition-colors text-(--muted)">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <line x1="2" y1="10" x2="2" y2="14" />
-                      <line x1="6" y1="6" x2="6" y2="18" />
-                      <line x1="10" y1="3" x2="10" y2="21" />
-                      <line x1="14" y1="6" x2="14" y2="18" />
-                      <line x1="18" y1="10" x2="18" y2="14" />
-                      <line x1="22" y1="10" x2="22" y2="14" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
+            <div className="mb-6">
+              <ChatInput
+                value={input}
+                onChange={setInput}
+                onSubmit={handleSubmit}
+                onKeyDown={handleKeyDown}
+                onInput={handleInput}
+                textareaRef={textareaRef}
+              />
             </div>
 
             {/* Conversations tabs */}
             <div className="flex items-center gap-4 mb-4">
-              <div className="flex items-center gap-1">
-                <button className="px-3 py-1.5 rounded-full text-sm bg-(--hover-bg) text-(--foreground) font-medium">
-                  Vos conversations
-                </button>
-              </div>
+              <button className="px-3 py-1.5 rounded-full text-sm bg-(--hover-bg) text-(--foreground) font-medium">
+                Vos conversations
+              </button>
               <p className="text-xs text-(--muted) flex items-center gap-1">
                 <svg
                   width="11"
@@ -137,13 +150,30 @@ export default function ProjectDetailPage({ onBack, favorite, onToggleFavorite }
               </p>
             </div>
 
-            {/* Empty conversations */}
-            <div className="rounded-2xl border border-(--border) bg-(--input-bg) px-6 py-8 text-center">
-              <p className="text-sm text-(--muted)">
-                Démarrez une conversation pour organiser les échanges et réutiliser les
-                connaissances du projet.
-              </p>
-            </div>
+            {/* Conversation list */}
+            {conversations.length === 0 ? (
+              <div className="rounded-2xl border border-(--border) bg-(--input-bg) px-6 py-8 text-center">
+                <p className="text-sm text-(--muted)">
+                  Démarrez une conversation pour organiser les échanges et réutiliser les
+                  connaissances du projet.
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col divide-y divide-(--border) border border-(--border) rounded-2xl overflow-hidden">
+                {conversations.map((conv) => (
+                  <button
+                    key={conv.id}
+                    onClick={() => onSelectConversation(conv.id)}
+                    className="flex flex-col items-start px-5 py-3 hover:bg-(--hover-bg) transition-colors text-left"
+                  >
+                    <span className="text-sm font-medium text-(--foreground)">{conv.title}</span>
+                    <span className="text-xs text-(--muted)">
+                      Dernier message {relativeTime(parseInt(conv.id))}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Right column */}

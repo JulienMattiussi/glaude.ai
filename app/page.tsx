@@ -80,6 +80,13 @@ export default function Home() {
           <ProjectsPage
             projectFavorite={projectFavorite}
             onToggleProjectFavorite={() => setProjectFavorite((f) => !f)}
+            conversations={store.conversations.filter((c) => c.projectId === "danree")}
+            onStartConversation={(text) => {
+              const convId = store.addUserMessage(text, "danree");
+              store.addAssistantReply(convId, 1500);
+              selectAndNavigate(convId);
+            }}
+            onSelectConversation={selectAndNavigate}
           />
         )}
         {view === "personnaliser" && <PersonnalisePage />}
@@ -105,6 +112,14 @@ export default function Home() {
               store.activeId ? () => store.toggleFavorite(store.activeId!) : undefined
             }
             userName="ma danrée"
+            conversationProjectName={
+              store.activeConversation?.projectId === "danree" ? "Contacter la danrée" : undefined
+            }
+            onNavigateToProject={
+              store.activeConversation?.projectId === "danree"
+                ? () => setView("projets")
+                : undefined
+            }
           />
         )}
       </main>
