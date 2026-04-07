@@ -26,8 +26,11 @@ export function ProjectConvRow({
   projects,
 }: Props) {
   return (
-    <div className="group/conv flex items-center px-5 py-3 hover:bg-(--hover-bg) transition-colors text-left">
-      <button onClick={onSelect} className="flex-1 flex flex-col items-start min-w-0">
+    <div className="group/conv flex items-center px-5 py-3 hover:bg-(--hover-bg) transition-colors text-left cursor-pointer">
+      <button
+        onClick={onSelect}
+        className="flex-1 flex flex-col items-start min-w-0 cursor-pointer"
+      >
         <span className="text-sm font-medium text-(--foreground) truncate w-full">
           {conv.title}
         </span>
@@ -47,7 +50,7 @@ export function ProjectConvRow({
         onRemoveFromProject={onRemoveFromProject}
         onMoveToProject={onMoveToProject}
         getMenuPos={(rect) => ({ top: rect.bottom + 4, left: rect.right - 192 })}
-        triggerClassName="opacity-0 group-hover/conv:opacity-100 shrink-0 p-1.5 rounded-lg text-(--muted) hover:text-(--foreground) transition-colors"
+        triggerClassName="opacity-0 group-hover/conv:opacity-100 shrink-0 p-1.5 rounded-lg text-(--muted) hover:text-(--foreground) transition-colors cursor-pointer"
       />
     </div>
   );

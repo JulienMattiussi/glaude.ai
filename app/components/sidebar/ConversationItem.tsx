@@ -32,7 +32,7 @@ export const ConversationItem = ({
   return (
     <div className="relative">
       <div
-        className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors w-full group/conv ${
+        className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors w-full group/conv cursor-pointer ${
           active
             ? "bg-(--hover-bg) text-(--foreground)"
             : "text-(--foreground) hover:bg-(--hover-bg)"
@@ -41,7 +41,7 @@ export const ConversationItem = ({
         <button
           onClick={onClick}
           title={collapsed ? label : undefined}
-          className="flex-1 text-left overflow-hidden"
+          className="flex-1 text-left overflow-hidden cursor-pointer"
         >
           <span
             className={`block whitespace-nowrap transition-all duration-300 overflow-hidden text-ellipsis ${
@@ -63,7 +63,7 @@ export const ConversationItem = ({
             onRemoveFromProject={onRemoveFromProject}
             onMoveToProject={onMoveToProject}
             getMenuPos={(rect) => ({ top: rect.bottom + 4, left: rect.left - 160 })}
-            triggerClassName={`shrink-0 p-1 rounded text-(--muted) hover:text-(--foreground) transition-colors ${active ? "opacity-100" : "opacity-0 group-hover/conv:opacity-100"}`}
+            triggerClassName={`shrink-0 p-1 rounded text-(--muted) hover:text-(--foreground) transition-colors cursor-pointer ${active ? "opacity-100" : "opacity-0 group-hover/conv:opacity-100"}`}
           />
         )}
       </div>
