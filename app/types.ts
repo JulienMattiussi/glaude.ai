@@ -12,4 +12,4 @@ export interface Conversation {
   projectId?: string;
 }
 
-export type View = "chat" | "discussions" | "projets" | "personnaliser";
+export type View = "chat" | "discussions" | "projets" | "projet-detail" | "personnaliser";

@@ -56,7 +56,7 @@ export default function Home() {
         onNavigate={setView}
         onOpenSearch={() => setSearchOpen(true)}
         projectFavorite={projectFavorite}
-        onNavigateToProject={() => setView("projets")}
+        onNavigateToProject={() => setView("projet-detail")}
       />
       {searchOpen && (
         <SearchModal
@@ -76,7 +76,7 @@ export default function Home() {
             onSelectConversation={selectAndNavigate}
           />
         )}
-        {view === "projets" && (
+        {(view === "projets" || view === "projet-detail") && (
           <ProjectsPage
             projectFavorite={projectFavorite}
             onToggleProjectFavorite={() => setProjectFavorite((f) => !f)}
@@ -87,6 +87,9 @@ export default function Home() {
               selectAndNavigate(convId);
             }}
             onSelectConversation={selectAndNavigate}
+            showDetail={view === "projet-detail"}
+            onOpenDetail={() => setView("projet-detail")}
+            onCloseDetail={() => setView("projets")}
           />
         )}
         {view === "personnaliser" && <PersonnalisePage />}
@@ -117,7 +120,7 @@ export default function Home() {
             }
             onNavigateToProject={
               store.activeConversation?.projectId === "danree"
-                ? () => setView("projets")
+                ? () => setView("projet-detail")
                 : undefined
             }
           />

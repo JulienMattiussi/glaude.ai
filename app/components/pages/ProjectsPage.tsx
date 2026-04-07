@@ -65,6 +65,9 @@ interface Props {
   conversations: Conversation[];
   onStartConversation: (text: string) => void;
   onSelectConversation: (id: string) => void;
+  showDetail?: boolean;
+  onOpenDetail: () => void;
+  onCloseDetail: () => void;
 }
 
 export default function ProjectsPage({
@@ -73,13 +76,15 @@ export default function ProjectsPage({
   conversations,
   onStartConversation,
   onSelectConversation,
+  showDetail = false,
+  onOpenDetail,
+  onCloseDetail,
 }: Props) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("activite");
   const [sortOpen, setSortOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("partage");
   const [modalOpen, setModalOpen] = useState(false);
-  const [detailOpen, setDetailOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -91,10 +96,10 @@ export default function ProjectsPage({
     return () => document.removeEventListener("mousedown", handler);
   }, [sortOpen]);
 
-  if (detailOpen) {
+  if (showDetail) {
     return (
       <ProjectDetailPage
-        onBack={() => setDetailOpen(false)}
+        onBack={onCloseDetail}
         favorite={projectFavorite}
         onToggleFavorite={onToggleProjectFavorite}
         conversations={conversations}
@@ -214,7 +219,7 @@ export default function ProjectsPage({
         ) : showProject ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div
-              onClick={() => setDetailOpen(true)}
+              onClick={onOpenDetail}
               className="flex flex-col gap-1.5 p-4 rounded-xl border border-(--border) bg-(--input-bg) hover:bg-(--hover-bg) transition-colors cursor-pointer"
             >
               <div className="flex items-center gap-1.5">
