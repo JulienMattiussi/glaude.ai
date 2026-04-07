@@ -6,6 +6,7 @@ import { MessageList } from "../messages/MessageList";
 import { ChatInput } from "./ChatInput";
 import { ConversationHeader } from "./ConversationHeader";
 import { LightningEffect } from "../effects/LightningEffect";
+import { UfoEffect } from "../effects/UfoEffect";
 import { useTypewriter } from "../../hooks/useTypewriter";
 import { randomDelay } from "../../lib/delay";
 import type { Message } from "../../types";
@@ -57,6 +58,8 @@ export default function ChatArea({
   const [boltCount, setBoltCount] = useState(0);
   const lastLightningCountRef = useRef(0);
   const lightningTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [ufo, setUfo] = useState(false);
+  const lastUfoCountRef = useRef(0);
   const replyAlreadyTriggeredRef = useRef(false);
 
   useEffect(() => {
@@ -73,6 +76,12 @@ export default function ChatArea({
       setLightning(true);
       lightningTimerRef.current = setTimeout(() => setLightning(false), 1400);
     }
+
+    const ufoThreshold = count < 50 ? 0 : Math.floor(count / 50) * 50;
+    if (ufoThreshold > 0 && ufoThreshold !== lastUfoCountRef.current) {
+      lastUfoCountRef.current = ufoThreshold;
+      setUfo(true);
+    }
   }, [messages]);
 
   useEffect(
@@ -81,6 +90,17 @@ export default function ChatArea({
     },
     []
   );
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "u" && (e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey) {
+        e.preventDefault();
+        setUfo(true);
+      }
+    };
+    document.addEventListener("keydown", handler, { capture: true });
+    return () => document.removeEventListener("keydown", handler, { capture: true });
+  }, []);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -179,6 +199,7 @@ export default function ChatArea({
     return (
       <>
         <LightningEffect active={lightning} boltCount={boltCount} />
+        <UfoEffect active={ufo} onDismiss={() => setUfo(false)} />
         <WelcomeScreen userName={userName} inputProps={inputProps} />
       </>
     );
@@ -187,6 +208,7 @@ export default function ChatArea({
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
       <LightningEffect active={lightning} boltCount={boltCount} />
+      <UfoEffect active={ufo} onDismiss={() => setUfo(false)} />
       {conversationTitle &&
         onRenameConversation &&
         onDeleteConversation &&
