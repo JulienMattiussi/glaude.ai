@@ -11,6 +11,8 @@ import ProjectsPage from "./components/pages/ProjectsPage";
 import { PROJECT_ID } from "./components/pages/ProjectDetailPage";
 import SearchModal from "./components/sidebar/SearchModal";
 
+const PROJECTS = [{ id: PROJECT_ID, title: "Contacter la danrée" }];
+
 export default function Home() {
   const store = useConversations();
   const [view, setView] = useState<View>("chat");
@@ -54,6 +56,9 @@ export default function Home() {
         onDeleteConversation={store.deleteConversation}
         onRenameConversation={store.renameConversation}
         onToggleFavoriteConversation={store.toggleFavorite}
+        onRemoveConversationFromProject={store.removeFromProject}
+        onMoveConversationToProject={store.moveToProject}
+        projects={PROJECTS}
         onNavigate={setView}
         onOpenSearch={() => setSearchOpen(true)}
         projectFavorite={projectFavorite}
@@ -122,6 +127,16 @@ export default function Home() {
               store.activeConversation?.projectId === PROJECT_ID
                 ? () => setView("projet-detail")
                 : undefined
+            }
+            onRemoveConversationFromProject={
+              store.activeId ? () => store.removeFromProject(store.activeId!) : undefined
+            }
+            projects={PROJECTS}
+            currentProjectId={store.activeConversation?.projectId}
+            onMoveConversationToProject={
+              store.activeId
+                ? (projectId) => store.moveToProject(store.activeId!, projectId)
+                : () => {}
             }
           />
         )}

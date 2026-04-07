@@ -25,6 +25,10 @@ interface ChatAreaProps {
   userName?: string;
   conversationProjectName?: string;
   onNavigateToProject?: () => void;
+  onRemoveConversationFromProject?: () => void;
+  projects: { id: string; title: string }[];
+  currentProjectId?: string;
+  onMoveConversationToProject: (projectId: string) => void;
 }
 
 export default function ChatArea({
@@ -42,6 +46,10 @@ export default function ChatArea({
   userName = "Juju",
   conversationProjectName,
   onNavigateToProject,
+  onRemoveConversationFromProject,
+  projects,
+  currentProjectId,
+  onMoveConversationToProject,
 }: ChatAreaProps) {
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
@@ -191,6 +199,10 @@ export default function ChatArea({
             onToggleFavorite={onToggleFavoriteConversation}
             projectName={conversationProjectName}
             onNavigateToProject={onNavigateToProject}
+            onRemoveFromProject={onRemoveConversationFromProject}
+            projects={projects}
+            currentProjectId={currentProjectId}
+            onMoveToProject={onMoveConversationToProject}
           />
         )}
       <MessageList

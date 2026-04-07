@@ -18,6 +18,9 @@ interface SidebarProps {
   onDeleteConversation: (id: string) => void;
   onRenameConversation: (id: string, title: string) => void;
   onToggleFavoriteConversation: (id: string) => void;
+  onRemoveConversationFromProject: (id: string) => void;
+  onMoveConversationToProject: (id: string, projectId: string) => void;
+  projects: { id: string; title: string }[];
   activeView: string;
   onNavigate: (view: View) => void;
   onOpenSearch: () => void;
@@ -33,6 +36,9 @@ export default function Sidebar({
   onDeleteConversation,
   onRenameConversation,
   onToggleFavoriteConversation,
+  onRemoveConversationFromProject,
+  onMoveConversationToProject,
+  projects,
   activeView,
   onNavigate,
   onOpenSearch,
@@ -237,6 +243,10 @@ export default function Sidebar({
                   onDelete={() => onDeleteConversation(conv.id)}
                   onRename={(newTitle) => onRenameConversation(conv.id, newTitle)}
                   onToggleFavorite={() => onToggleFavoriteConversation(conv.id)}
+                  projectId={conv.projectId}
+                  projects={projects}
+                  onRemoveFromProject={() => onRemoveConversationFromProject(conv.id)}
+                  onMoveToProject={(projectId) => onMoveConversationToProject(conv.id, projectId)}
                 />
               ))}
           </div>
@@ -267,6 +277,10 @@ export default function Sidebar({
                   onDelete={() => onDeleteConversation(conv.id)}
                   onRename={(newTitle) => onRenameConversation(conv.id, newTitle)}
                   onToggleFavorite={() => onToggleFavoriteConversation(conv.id)}
+                  projectId={conv.projectId}
+                  projects={projects}
+                  onRemoveFromProject={() => onRemoveConversationFromProject(conv.id)}
+                  onMoveToProject={(projectId) => onMoveConversationToProject(conv.id, projectId)}
                 />
               ))}
           </div>

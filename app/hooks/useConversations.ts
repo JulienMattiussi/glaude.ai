@@ -72,6 +72,20 @@ export function useConversations() {
     setConversations((prev) => prev.map((c) => (c.id === id ? { ...c, title } : c)));
   };
 
+  const moveToProject = (id: string, projectId: string) => {
+    setConversations((prev) => prev.map((c) => (c.id === id ? { ...c, projectId } : c)));
+  };
+
+  const removeFromProject = (id: string) => {
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.id !== id) return c;
+        const { projectId: _, ...rest } = c;
+        return rest;
+      })
+    );
+  };
+
   const deleteConversation = (id: string) => {
     setConversations((prev) => prev.filter((c) => c.id !== id));
     if (activeId === id) setActiveId(null);
@@ -117,5 +131,7 @@ export function useConversations() {
     deleteConversation,
     renameConversation,
     toggleFavorite,
+    moveToProject,
+    removeFromProject,
   };
 }

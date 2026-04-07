@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "../icons/Icon";
+import { MoveToProjectModal } from "../sidebar/MoveToProjectModal";
 
 interface ConversationHeaderProps {
   title: string;
@@ -12,6 +13,10 @@ interface ConversationHeaderProps {
   onToggleFavorite: () => void;
   projectName?: string;
   onNavigateToProject?: () => void;
+  onRemoveFromProject?: () => void;
+  projects: { id: string; title: string }[];
+  currentProjectId?: string;
+  onMoveToProject: (projectId: string) => void;
 }
 
 export function ConversationHeader({
@@ -22,10 +27,15 @@ export function ConversationHeader({
   onToggleFavorite,
   projectName,
   onNavigateToProject,
+  onRemoveFromProject,
+  projects,
+  currentProjectId,
+  onMoveToProject,
 }: ConversationHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
   const [renaming, setRenaming] = useState(false);
+  const [moveModalOpen, setMoveModalOpen] = useState(false);
   const [renameValue, setRenameValue] = useState(title);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -111,19 +121,58 @@ export function ConversationHeader({
               </span>
               Renommer
             </button>
-            <button
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-(--foreground) hover:bg-(--hover-bg) transition-colors"
-            >
-              <span className="text-(--muted)">
-                <Icon size={14}>
-                  <rect x="2" y="3" width="20" height="14" rx="2" />
-                  <line x1="8" y1="21" x2="16" y2="21" />
-                  <line x1="12" y1="17" x2="12" y2="21" />
-                </Icon>
-              </span>
-              Ajouter au projet
-            </button>
+            {projectName ? (
+              <>
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setMoveModalOpen(true);
+                  }}
+                  className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-(--foreground) hover:bg-(--hover-bg) transition-colors"
+                >
+                  <span className="text-(--muted)">
+                    <Icon size={14}>
+                      <rect x="2" y="3" width="20" height="14" rx="2" />
+                      <line x1="8" y1="21" x2="16" y2="21" />
+                      <line x1="12" y1="17" x2="12" y2="21" />
+                    </Icon>
+                  </span>
+                  Changer de projet
+                </button>
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onRemoveFromProject?.();
+                  }}
+                  className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-(--foreground) hover:bg-(--hover-bg) transition-colors"
+                >
+                  <span className="text-(--muted)">
+                    <Icon size={14}>
+                      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                      <line x1="9" y1="10" x2="15" y2="10" />
+                    </Icon>
+                  </span>
+                  Supprimer du projet
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  setMoveModalOpen(true);
+                }}
+                className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-(--foreground) hover:bg-(--hover-bg) transition-colors"
+              >
+                <span className="text-(--muted)">
+                  <Icon size={14}>
+                    <rect x="2" y="3" width="20" height="14" rx="2" />
+                    <line x1="8" y1="21" x2="16" y2="21" />
+                    <line x1="12" y1="17" x2="12" y2="21" />
+                  </Icon>
+                </span>
+                Ajouter au projet
+              </button>
+            )}
             <div className="h-px bg-(--border) mx-3 my-1" />
             <button
               onClick={() => {
@@ -234,6 +283,15 @@ export function ConversationHeader({
           </div>,
           document.body
         )}
+
+      {moveModalOpen && (
+        <MoveToProjectModal
+          projects={projects}
+          currentProjectId={currentProjectId}
+          onSelect={onMoveToProject}
+          onClose={() => setMoveModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
