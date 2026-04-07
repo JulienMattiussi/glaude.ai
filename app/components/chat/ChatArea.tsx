@@ -59,6 +59,7 @@ export default function ChatArea({
   const lastLightningCountRef = useRef(0);
   const lightningTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [ufo, setUfo] = useState(false);
+  const [showMartian, setShowMartian] = useState(false);
   const lastUfoCountRef = useRef(0);
   const replyAlreadyTriggeredRef = useRef(false);
 
@@ -193,6 +194,7 @@ export default function ChatArea({
     onInput: handleInput,
     textareaRef,
     disabled: isThinking,
+    showMartian,
   };
 
   if (messages.length === 0 && !isThinking) {
@@ -208,7 +210,13 @@ export default function ChatArea({
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
       <LightningEffect active={lightning} boltCount={boltCount} />
-      <UfoEffect active={ufo} onDismiss={() => setUfo(false)} />
+      <UfoEffect
+        active={ufo}
+        onDismiss={() => {
+          setUfo(false);
+          setShowMartian(true);
+        }}
+      />
       {conversationTitle &&
         onRenameConversation &&
         onDeleteConversation &&
@@ -248,8 +256,10 @@ export default function ChatArea({
         onEditChange={setEditingText}
       />
       <div className="px-4 pb-4">
-        <div className="max-w-2xl mx-auto">
-          <ChatInput {...inputProps} />
+        <div className="max-w-2xl mx-auto flex items-stretch gap-2">
+          <div className="flex-1 min-w-0">
+            <ChatInput {...inputProps} />
+          </div>
         </div>
       </div>
     </div>
