@@ -17,7 +17,7 @@ interface ChatAreaProps {
   conversationFavorite?: boolean;
   messages: Message[];
   onUserMessage: (text: string) => string;
-  onAssistantReply: (convId: string, delay: number) => void;
+  onAssistantReply: (convId: string, delay: number, martianMode?: boolean) => void;
   onTruncate: (keepUpToId: string) => void;
   onEditMessage: (messageId: string, newContent: string) => void;
   onRenameConversation?: (title: string) => void;
@@ -154,7 +154,7 @@ export default function ChatArea({
     setIsThinking(true);
     const delay = randomDelay();
     setTimeout(() => {
-      onAssistantReply(convId, delay);
+      onAssistantReply(convId, delay, showMartian);
       setIsThinking(false);
     }, delay);
   };

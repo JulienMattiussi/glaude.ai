@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import { generateProutContent } from "../lib/prout";
+import { generateBilibliContent } from "../lib/bilibli";
 import { findRecipe } from "../lib/responses";
 import type { Conversation, Message } from "../types";
 
@@ -101,12 +102,13 @@ export function useConversations() {
     );
   };
 
-  const addAssistantReply = (convId: string, delay: number) => {
+  const addAssistantReply = (convId: string, delay: number, martianMode = false) => {
     setConversations((prev) => {
       const conv = prev.find((c) => c.id === convId);
       const lastUserMsg = conv?.messages.findLast((m) => m.role === "user");
       const content =
-        (lastUserMsg && findRecipe(lastUserMsg.content)) ?? generateProutContent(delay);
+        (lastUserMsg && findRecipe(lastUserMsg.content)) ??
+        (martianMode ? generateBilibliContent(delay) : generateProutContent(delay));
       const assistantMessage: Message = {
         id: `${Date.now()}-assistant`,
         role: "assistant",
