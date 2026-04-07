@@ -30,8 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="h-full flex">{children}</body>
+    <html lang="fr" className={`${geistSans.variable} h-dvh antialiased`}>
+      <body className="h-dvh flex">{children}</body>
     </html>
   );
 }

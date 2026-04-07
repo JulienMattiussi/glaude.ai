@@ -47,7 +47,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-(--background)">
+    <div className="flex h-dvh w-full overflow-hidden bg-(--background)">
       <Sidebar
         conversations={store.conversations}
         activeConversationId={store.activeId}
