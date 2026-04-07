@@ -83,7 +83,6 @@ export default function Home() {
             conversations={store.conversations.filter((c) => c.projectId === "danree")}
             onStartConversation={(text) => {
               const convId = store.addUserMessage(text, "danree");
-              store.addAssistantReply(convId, 1500);
               selectAndNavigate(convId);
             }}
             onSelectConversation={selectAndNavigate}

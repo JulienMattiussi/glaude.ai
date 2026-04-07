@@ -49,6 +49,7 @@ export default function ChatArea({
   const [boltCount, setBoltCount] = useState(0);
   const lastLightningCountRef = useRef(0);
   const lightningTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const replyAlreadyTriggeredRef = useRef(false);
 
   useEffect(() => {
     const count = messages
@@ -89,7 +90,22 @@ export default function ChatArea({
     focusInput();
   }, [conversationId]);
 
+  // Auto-trigger reply when arriving on a conversation whose last message is from the user
+  useEffect(() => {
+    if (!conversationId || isThinking) return;
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg?.role === "user") {
+      if (replyAlreadyTriggeredRef.current) {
+        replyAlreadyTriggeredRef.current = false;
+        return;
+      }
+      triggerReply(conversationId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationId]);
+
   const triggerReply = (convId: string) => {
+    replyAlreadyTriggeredRef.current = true;
     setIsThinking(true);
     const delay = randomDelay();
     setTimeout(() => {
