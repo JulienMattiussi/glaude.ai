@@ -2,29 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Icon } from "../icons/Icon";
+import ProjectDetailPage from "./ProjectDetailPage";
 
-const ProjectsEmptyIcon = () => (
-  <svg
-    width="80"
-    height="80"
-    viewBox="0 0 80 80"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    className="text-(--foreground)"
-  >
-    <rect x="10" y="10" width="26" height="26" rx="2" />
-    <rect x="44" y="10" width="26" height="26" rx="2" />
-    <rect x="10" y="44" width="26" height="26" rx="2" />
-    <rect x="44" y="44" width="26" height="26" rx="2" />
-    <g transform="translate(46, 46)">
-      <path d="M8 2C8 2 8 12 8 16C8 18 10 20 12 20C14 20 16 18 16 16L16 10" strokeLinecap="round" />
-      <path d="M8 16C8 16 4 18 4 22C4 26 6 30 8 32" strokeLinecap="round" />
-      <line x1="10" y1="10" x2="10" y2="4" strokeLinecap="round" />
-      <line x1="12" y1="10" x2="12" y2="3" strokeLinecap="round" />
-      <line x1="14" y1="10" x2="14" y2="4" strokeLinecap="round" />
-      <line x1="16" y1="10" x2="16" y2="5" strokeLinecap="round" />
-    </g>
+const LockIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
   </svg>
 );
 
@@ -36,10 +19,56 @@ const SORT_LABELS: Record<SortOption, string> = {
   creation: "Créé.e.s récemment",
 };
 
-export default function ProjectsPage() {
+type Tab = "vos" | "equipe" | "partage";
+
+const PROJECT = {
+  title: "Contacter la danrée",
+  description:
+    "Il est nécéssaire de trouver un moyen pour contacter la danrée afin d'obtenir les réponses de l'univers",
+};
+
+function NoNewProjectModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="relative bg-(--input-bg) rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 flex flex-col gap-4">
+        <p className="text-sm text-(--foreground) leading-relaxed">
+          Un seul projet est disponible pour l&apos;instant. Il n&apos;est donc pas actuellement
+          possible d&apos;en créer un nouveau.
+        </p>
+        <div className="flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-lg bg-(--foreground) text-(--background) text-sm font-medium hover:opacity-80 transition-opacity"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface Props {
+  projectFavorite: boolean;
+  onToggleProjectFavorite: () => void;
+}
+
+export default function ProjectsPage({ projectFavorite, onToggleProjectFavorite }: Props) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("activite");
   const [sortOpen, setSortOpen] = useState(false);
+  const [tab, setTab] = useState<Tab>("partage");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,13 +80,34 @@ export default function ProjectsPage() {
     return () => document.removeEventListener("mousedown", handler);
   }, [sortOpen]);
 
+  if (detailOpen) {
+    return (
+      <ProjectDetailPage
+        onBack={() => setDetailOpen(false)}
+        favorite={projectFavorite}
+        onToggleFavorite={onToggleProjectFavorite}
+      />
+    );
+  }
+
+  const showProject =
+    tab === "partage" &&
+    (search === "" ||
+      PROJECT.title.toLowerCase().includes(search.toLowerCase()) ||
+      PROJECT.description.toLowerCase().includes(search.toLowerCase()));
+
   return (
     <div className="flex-1 overflow-y-auto px-8 py-8">
+      {modalOpen && <NoNewProjectModal onClose={() => setModalOpen(false)} />}
+
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-semibold text-(--foreground)">Projets</h1>
-          <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-(--foreground) text-(--background) text-sm font-medium hover:opacity-80 transition-opacity">
+          <button
+            onClick={() => setModalOpen(true)}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-(--foreground) text-(--background) text-sm font-medium hover:opacity-80 transition-opacity"
+          >
             <Icon size={14}>
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
@@ -83,10 +133,32 @@ export default function ProjectsPage() {
           />
         </div>
 
-        {/* Sort */}
-        <div className="flex items-center justify-end gap-2 text-sm text-(--muted) mb-8">
-          <span>Trier par</span>
-          <div ref={sortRef} className="relative">
+        {/* Tabs + Sort */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-1">
+            {(
+              [
+                ["vos", "Vos projets"],
+                ["equipe", "Équipe"],
+                ["partage", "Partagé avec vous."],
+              ] as [Tab, string][]
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                  tab === key
+                    ? "bg-(--hover-bg) text-(--foreground) font-medium"
+                    : "text-(--muted) hover:text-(--foreground)"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div ref={sortRef} className="relative flex items-center gap-2 text-sm text-(--muted)">
+            <span>Trier par</span>
             <button
               onClick={() => setSortOpen((o) => !o)}
               className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-(--border) text-(--foreground) hover:bg-(--hover-bg) transition-colors text-sm"
@@ -97,7 +169,7 @@ export default function ProjectsPage() {
               </Icon>
             </button>
             {sortOpen && (
-              <div className="absolute right-0 mt-1 z-50 bg-(--input-bg) border border-(--border) rounded-xl shadow-lg py-1 w-52">
+              <div className="absolute right-0 top-full mt-1 z-50 bg-(--input-bg) border border-(--border) rounded-xl shadow-lg py-1 w-52">
                 {(Object.entries(SORT_LABELS) as [SortOption, string][]).map(([key, label]) => (
                   <button
                     key={key}
@@ -120,24 +192,32 @@ export default function ProjectsPage() {
           </div>
         </div>
 
-        {/* Empty state */}
-        <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
-          <ProjectsEmptyIcon />
-          <h2 className="text-base font-semibold text-(--foreground)">
-            Vous souhaitez démarrer un projet ?
-          </h2>
-          <p className="text-sm text-(--muted) max-w-sm leading-relaxed">
-            Téléchargez vos documents, définissez des instructions personnalisées et organisez vos
-            conversations dans un seul espace.
-          </p>
-          <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-(--border) text-(--foreground) text-sm font-medium hover:bg-(--hover-bg) transition-colors mt-2">
-            <Icon size={14}>
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </Icon>
-            Nouveau projet
-          </button>
-        </div>
+        {/* Content */}
+        {tab !== "partage" ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <p className="text-sm text-(--muted)">Aucun projet.</p>
+          </div>
+        ) : showProject ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div
+              onClick={() => setDetailOpen(true)}
+              className="flex flex-col gap-1.5 p-4 rounded-xl border border-(--border) bg-(--input-bg) hover:bg-(--hover-bg) transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-semibold text-(--foreground)">{PROJECT.title}</span>
+                <span className="text-(--muted)">
+                  <LockIcon />
+                </span>
+              </div>
+              <p className="text-sm text-(--muted) line-clamp-2">{PROJECT.description}</p>
+              <p className="text-xs text-(--muted) mt-1">Mis.e.s à jour il y a 18 heures</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16">
+            <p className="text-sm text-(--muted)">Aucun projet trouvé.</p>
+          </div>
+        )}
       </div>
     </div>
   );

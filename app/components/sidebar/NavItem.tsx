@@ -20,7 +20,7 @@ export const NavItem = ({
   <button
     onClick={onClick}
     title={collapsed ? label : undefined}
-    className={`group flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors w-full text-left overflow-hidden ${
+    className={`group flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors w-full text-left overflow-hidden cursor-pointer ${
       active ? "bg-(--hover-bg) text-(--foreground)" : "text-(--foreground) hover:bg-(--hover-bg)"
     }`}
   >

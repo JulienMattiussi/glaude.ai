@@ -21,6 +21,8 @@ interface SidebarProps {
   activeView: string;
   onNavigate: (view: View) => void;
   onOpenSearch: () => void;
+  projectFavorite: boolean;
+  onNavigateToProject: () => void;
 }
 
 export default function Sidebar({
@@ -34,6 +36,8 @@ export default function Sidebar({
   activeView,
   onNavigate,
   onOpenSearch,
+  projectFavorite,
+  onNavigateToProject,
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -195,7 +199,7 @@ export default function Sidebar({
         />
       </nav>
 
-      {conversations.some((c) => c.favorite) && (
+      {(conversations.some((c) => c.favorite) || projectFavorite) && (
         <>
           <Divider />
           <div
@@ -204,6 +208,19 @@ export default function Sidebar({
             <span className="text-xs text-(--muted) font-medium whitespace-nowrap">Favoris</span>
           </div>
           <div className="px-2 flex flex-col gap-0.5">
+            {projectFavorite && (
+              <NavItem
+                collapsed={collapsed}
+                icon={
+                  <Icon size={14}>
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                  </Icon>
+                }
+                label="Contacter la danrée"
+                onClick={closeOnMobile(onNavigateToProject)}
+                active={activeView === "projets"}
+              />
+            )}
             {conversations
               .filter((c) => c.favorite)
               .map((conv) => (

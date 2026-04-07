@@ -14,6 +14,7 @@ export default function Home() {
   const store = useConversations();
   const [view, setView] = useState<View>("chat");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [projectFavorite, setProjectFavorite] = useState(false);
 
   const selectAndNavigate = (id: string) => {
     store.selectConversation(id);
@@ -54,6 +55,8 @@ export default function Home() {
         onToggleFavoriteConversation={store.toggleFavorite}
         onNavigate={setView}
         onOpenSearch={() => setSearchOpen(true)}
+        projectFavorite={projectFavorite}
+        onNavigateToProject={() => setView("projets")}
       />
       {searchOpen && (
         <SearchModal
@@ -73,7 +76,12 @@ export default function Home() {
             onSelectConversation={selectAndNavigate}
           />
         )}
-        {view === "projets" && <ProjectsPage />}
+        {view === "projets" && (
+          <ProjectsPage
+            projectFavorite={projectFavorite}
+            onToggleProjectFavorite={() => setProjectFavorite((f) => !f)}
+          />
+        )}
         {view === "personnaliser" && <PersonnalisePage />}
         {view === "chat" && (
           <ChatArea
